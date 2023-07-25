@@ -1,0 +1,31 @@
+#include <stdio.h>
+int main()
+{
+   int x, y, z;
+
+   scanf("%d %d", &x, &y);
+   scanf("%d", &z);
+
+        if(z+y>=60)
+        {
+            int h =(y+z) / 60;
+            int m =(y+z) % 60;
+
+            if(x + h >= 24)
+            {
+                x= x + h - 24;
+                y = m;
+            }
+             else
+            {
+                x = x + h;
+                y = m;
+            }
+        }
+
+    else if(x>0)
+    {
+        y = y + z;
+    }
+    printf("%d %d", x, y);
+ }
