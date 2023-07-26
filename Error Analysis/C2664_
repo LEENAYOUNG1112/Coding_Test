@@ -1,0 +1,43 @@
+// 메모 :
+// const와 pointer의 연관성을 이해하지 못하고 "int SIZE = 5" 상수에 포인터 &SIZE를 사용하게 되었음.
+// 찾아봤을 때 결국 **포인터와 상수의 연관성** 부족으로 컴파일러 오류가 발생한 것이었다.
+// 포인터의 연관성에 대해 노션에 적어놓기로 하자.
+
+/*==========================================*/
+int input_arry(int* iNum, int size);
+int print_array(int* Num, int size);
+
+int main()
+{
+	int arr[5]; // 배열
+	int SIZE = 5; // size 고정
+	// 포인터는 상수를 담을 수 없기 때문에 const 변수를 통해 고정시켜준다
+
+	input_arry(arr, SIZE);
+	// 포인터에 배열 이름을 대입하면 arr[0]부터 시작된다
+	// arr[0] size 부터 "4byte * 5" 까지 알 수 있다는 유용함
+	print_array(arr, SIZE);
+	return 0;
+}
+
+int input_arry(int* iNum, int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << "정수를 입력해주세요_ ";
+		cin >> *iNum;
+		iNum++; 
+		// [(int) Pointer]+ 정수 = (int)Pointer
+		// iNum은 배열이니까 한마디로 포인터에서 포인터로 넘어감으로써
+		//배열[0] -> 배열[1] 로 넘어가는 같은 연관성이 있다.
+	}
+}
+
+int print_array(int* iNum, int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << *iNum << endl;
+		iNum++;
+	}
+}
