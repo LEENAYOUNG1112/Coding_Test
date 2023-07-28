@@ -1,0 +1,80 @@
+void BubbleSort(int* a, int* b);
+
+const int SIZE = 5;
+
+int main()
+{
+	int iArray[SIZE];
+	
+	int sum(0);
+	int max = -1;
+	int min = 1000;
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		cin >> iArray[i];
+	}
+
+	int* qArray = iArray;
+
+	// 버블 정렬 : 인접한 두 인자 값끼리 서로 크기를 비교하며 정렬하는 기법
+	// bubble sort 시에 배열을 제대로 맞추지 않아 쓰레기 값이 들어오는 에러가 생겼다.
+	// 바꾸는 걸 SIZE-1번 하지 않으면 그 뒤에 없는 쓰레기 값이 들어오게 된다
+	for (int i = 0; i < SIZE - 1; i++)
+	{
+		for (int j = 0; j < SIZE- i - 1; j++)
+		{
+			if(qArray[j] > qArray[j+1])
+			{
+				BubbleSort(&qArray[j], &qArray[j + 1]);
+			}
+
+		}
+	}
+	cout << "정렬 ";
+
+
+	//입력란
+	for(int i = 0; i < 5; i++)
+	{
+		cout << qArray[i] << " ";
+	}
+	cout << endl;
+
+	// 정수의 최대 값
+	for (int i = 0; i < SIZE; i++)
+	{
+		if (max < qArray[i])
+		{
+			max = qArray[i];
+		}
+	}
+
+	// 정수의 최소 값
+	for (int i = 0; i < SIZE; i++)
+	{
+		if (min > qArray[i])
+		{
+			min = qArray[i];
+		}
+	}
+
+	// 정수의 총합
+	for (int i = 0; i < SIZE; i++)
+	{
+		sum += qArray[i];
+	}
+
+	//결과
+	cout << "최대 : " << max << endl;
+	cout << "최소 : " << min << endl;
+	cout << "총합 : " << sum << endl;
+}
+
+void BubbleSort(int* a, int* b)
+{
+	int tmp;
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
