@@ -1,4 +1,5 @@
 #include <iostream>
+
 using namespace std;
 
 const int SIZE = 6;
@@ -18,7 +19,7 @@ void Inputlotto()
 {
 	int iChoice[SIZE];
 
-	cout << "▶ 1~ 45까지의 로또 번호를 입력하세요" << endl;
+	cout << "▶ 1~ 45까지의 로또 번호 를 입력하세요" << endl;
 	cout << "> ";
 	
 	for (int i = 0; i < SIZE; i++)
@@ -27,6 +28,7 @@ void Inputlotto()
 		if (iChoice[i] > 45 || iChoice[i] < 1)
 		{
 			cout << "▶ "<< iChoice[i] << "는 로또에는 없는 번호입니다. 다시 입력해주세요!" << endl;
+			cout << endl;
 			Inputlotto();
 		}
 	}
@@ -38,6 +40,7 @@ void Randomlotto()
 {
 	// 랜덤 번호 뽑기
 	int randomChoice[SIZE];
+	cout << endl;
 	cout << "▶ 오늘의 로또 번호는?" << endl;
 
 	for (int i = 0; i < SIZE; i++)
@@ -99,5 +102,8 @@ void Bubble(int* randomChoice)
 	}
 	cout << "입니다" << endl;
 }
+
+
+
 
 
