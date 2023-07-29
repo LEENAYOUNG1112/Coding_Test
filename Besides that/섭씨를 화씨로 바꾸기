@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+
+float CelToFah(float num);
+
+int main()
+{
+	float num;
+	cout << "섭씨 온도를 입력하세요 : " << endl;
+	cin >> num;
+
+	cout << CelToFah(num);
+
+}
+
+float CelToFah(float num)
+{
+	float Fah;
+
+	Fah = 1.8 * num + 32;
+
+	return Fah;
+}
