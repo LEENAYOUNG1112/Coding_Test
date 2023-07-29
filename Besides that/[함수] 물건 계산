@@ -1,0 +1,84 @@
+#incldue<iostream>
+using namespace std;
+
+//출력 요소
+void Menu();
+int Count();
+
+// 입력 요소
+int Cream(int* qMoney); 
+int Cheap(int* qMoney);
+int Cok(int* qMoney);
+
+int main()
+{
+	Menu();
+	Count();
+}
+
+void Menu()
+{
+	cout << "▶ 가지고 있는 돈에 딱 맞게 물건의 개수를 골라주세요" << endl;
+	cout << "▶ 현재 돈 : 3500원" << endl;
+	cout << "▶ 크림 빵 : 500원" << endl;
+	cout << "▶ 새우깡 : 700원" << endl;
+	cout << "▶ 콜라 : 400원" << endl;
+	cout << endl;
+}
+
+int Count()
+{
+	int iMoney = 3500;
+	int* qMoney = &iMoney;
+	int iDie(1);
+
+	int* qDie = &iDie;
+	Cream(qMoney);
+	Cheap(qMoney);
+	Cok(qMoney);
+	
+	if (*qMoney != 0)
+	{
+		cout << endl;
+		cout << "▶ 다시 입력해주세요" << endl;
+		Count();
+	}
+
+	if (*qMoney == 0)
+	{
+		cout << endl;
+		cout << "▶ 전부 구입 성공!" << endl;
+		return 0;
+	}
+}
+
+int Cream(int* qMoney) // 주소의 값 받기
+{
+	int CreamBread;
+	cout << "▶ 크림빵 개수 : ";
+	cin >> CreamBread;
+	
+	*qMoney -= 500 * CreamBread;
+	return *qMoney;
+}
+
+int Cheap(int* qMoney)
+{
+	int iCheap;
+	cout << "▶ 새우깡 개수 : ";
+	cin >> iCheap;
+
+	*qMoney -= 700 * iCheap;
+	return *qMoney;
+}
+
+
+int Cok(int* qMoney)
+{
+	int iCheap;
+	cout << "▶ 콜라 개수 : ";
+	cin >> iCheap;
+
+	*qMoney -= 400 * iCheap;
+	return *qMoney;
+}
