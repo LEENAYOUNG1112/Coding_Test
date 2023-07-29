@@ -1,0 +1,128 @@
+#include <iostream>
+#include <cstdlib>
+#include <time.h>
+using namespace std;
+
+int GameStart(); // 게임 시작
+int RandomNumber(); // 숫자 랜덤 생성
+int InGame(int* qRandomNumber); // 게임 9판 호출
+int Input(); // 숫자 입력란
+int Battle(int* qRandomNumber, int* iInput, int* qDie); // 숫자 비교
+
+
+int main()
+{
+	GameStart();
+}
+
+/// <summary> 게임 시작 </summary>
+int GameStart()
+{
+	int iChoice;
+	int iRandomNumber[3]; // 랜덤 숫자 등록
+
+	cout << "▶ 야구 게임을 시작하시겠습니까?" << endl;
+	cout << "[1] YES" << endl;
+	cout << "[2] NO" << endl;
+	cin >> iChoice;
+
+	if (iChoice == 1)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			iRandomNumber[i] = RandomNumber(); // 숫자 생성
+		}
+	}
+	else
+	{
+		return 0;
+	}
+		
+	int* qRandomNumber = iRandomNumber;
+	InGame(qRandomNumber); 
+}
+
+/// <summary> 숫자 랜덤 생성기 </summary>
+int RandomNumber()
+{
+	srand(time(NULL));
+
+	int randomChoice;
+	int i(0);
+
+	return randomChoice = 1 + (rand() % 9); 
+	//하나 하나 숫자를 돌려줄 것이다.
+}
+
+/// <summary> 인게임 : 회차 돌리기</summary>
+int InGame(int* qRandomNumber)
+{
+	int iCount(0);
+	int iInput[3];
+	int iDie(9);
+
+	int* qDie = &iDie;
+
+	while (iCount < 9)
+	{
+		iCount++; 
+		cout << "▶ "<< iCount << "회차: " << endl;
+
+		for (int i = 0; i < 3; i++)
+		{
+			iInput[i] = Input(); // 입력 란 호출
+		}
+
+		Battle(qRandomNumber, iInput, qDie);
+
+		if (*qDie == 0) 
+		{
+			return 0;
+		}
+	}
+	return 0;
+}
+
+/// <summary> 숫자 입력란 </summary>
+int Input()
+{
+	int iChoice;
+	cin >> iChoice;
+
+	return iChoice;
+}
+
+/// <summary> 숫자 비교 </summary>
+int Battle(int* qRandomNumber, int* iInput, int* qDie)
+{
+	int iBall(0);
+	int iStrike(0);
+
+	for (int i = 0; i < 3; i++)
+	{
+		// 숫자와 순서가 같다면 스트라이크
+		if (qRandomNumber[i] == iInput[i])
+		{
+			iStrike++;
+			if (iStrike == 3)
+			{
+				cout << "▶ ALL STRIKE" << endl;
+				*qDie = 0;
+				return 0;
+			}
+		}
+
+		// 순서가 같지 않고 숫자가 맞다면 볼
+		for (int j = 0; j < 3; j++)
+		{
+			if (qRandomNumber[i] == iInput[j] && qRandomNumber[i] != iInput[i])
+			{
+				iBall++;
+			}
+		}
+	}
+
+	cout << "▶ " << iStrike << " 스트라이크 " << iBall << " 볼 " << endl;
+	qDie--;
+	return 0;
+}
