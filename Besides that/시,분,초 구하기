@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	int second;
+	cin >> second;
+
+	int iHour = second / 60;
+	int iS = second % 60;
+	int iM(0);
+
+	if (iHour >= 60)
+	{
+		iM = iHour % 60;
+		iHour = iHour / 60;
+	}
+	if (iS >= 60)
+	{
+		iM = iS / 60;
+		iS = iS % 60;
+	}
+
+	cout << "h: " << iHour << endl;
+	cout << "m: " << iM << endl;
+	cout << "s: " << iS << endl;
+
+	
+}
