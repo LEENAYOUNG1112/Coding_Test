@@ -2,7 +2,7 @@ void BubbleSort(int* a, int* b);
 
 const int SIZE = 5;
 
-int main()
+int main() 
 {
 	int iArray[SIZE];
 	
