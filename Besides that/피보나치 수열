@@ -1,0 +1,29 @@
+void Fibo(int iNum);
+
+int main()
+{
+	int iNum;
+	int iArray[10];
+	cin >> iNum;
+	
+	Fibo(iNum);
+	return 0;
+}
+
+void Fibo(int iNum)
+{
+	int f1 = 0, f2 = 1, f3, i;
+	if (iNum == 1)
+		cout << f1;
+	else
+		cout << f1 << f2;
+
+	for (i = 0; i < iNum - 2; i++)
+	{
+		f3 = f1 + f2;
+		cout << f3;
+		f1 = f2;
+		f2 = f3;
+	}
+	
+}
