@@ -1,0 +1,53 @@
+#include <iostream>
+using namespace std;
+
+// 조건1 : 최대와 최소를 각각 함수로 나누어라 
+
+int MaxNum(int* a);
+int MinNum(int* b);
+
+int main()
+{
+	int num[3];
+
+	for (int i = 0; i < 3; i++)
+	{
+		cin >> num[i];
+	}
+
+	int* qNum = num;
+
+	int max = MaxNum(qNum);
+	int min = MinNum(qNum);
+
+	cout << "최대 값 : " << max << endl;
+	cout << "최소 값 : " << min << endl;
+}
+
+int MaxNum(int a[])
+{
+	int max = -1;
+	for (int i = 0; i < 3 - 1; i++)
+	{
+		if (max < a[i])
+		{
+			max = a[i];
+		}
+	}
+	
+	return (max);
+}
+
+int MinNum(int* b)
+{
+	int min = 9102938;
+	for (int i = 0; i < 3 - 1; i++)
+	{
+		if (min > b[i])
+		{
+			min = b[i];
+		}
+	}
+
+	return (min);
+}
