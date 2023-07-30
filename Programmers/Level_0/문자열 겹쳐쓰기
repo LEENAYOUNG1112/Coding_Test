@@ -5,6 +5,7 @@ using namespace std;
 
 string solution(string my_string, string overwrite_string, int s) 
 {
+    // str.replace(문자열 시작 위치, 길이,치환할 문자열)
     my_string.replace(s, overwrite_string.length(), overwrite_string);
     return my_string;
 }
