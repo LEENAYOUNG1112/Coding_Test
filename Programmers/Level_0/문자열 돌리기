@@ -6,6 +6,7 @@ using namespace std;
 int main(void) {
     string str;
     cin >> str;
+    //str 사이즈를 재서 for문 돌리기
     for(int i = 0; i < str.size(); i++)
     {
         cout << str[i] << endl;
