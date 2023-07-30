@@ -1,0 +1,37 @@
+// Visual Studio 상에서는 정상적으로 뜨는데
+// Programmers 에서는 에러남 why...
+
+#include <iostream>
+
+int Compare(int a, int b);
+int Cat(int a, int b);
+
+int main()
+{
+	int a, b;
+    cin >> a >> b;
+	int iA = Cat(a, b);
+	int iB = Cat(b, a);
+
+	int solution = Compare(iA, iB);
+    
+    cout << solution << end;
+	return solution;
+
+}
+
+int Compare(int a, int b)
+{
+	return a > b ? a : b;
+}
+
+int Cat(int a, int b)
+{
+	int p = 1;
+	while (p <= b)
+	{
+		p *= 10;
+	}
+	return (a * p) + b;
+}
+
