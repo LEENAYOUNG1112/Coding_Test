@@ -1,0 +1,31 @@
+void MinMax(int* iArray, int** max);
+//최대 값 구하기
+int main()
+{
+	int iArray[5] = { 0 };
+	int max = -1;
+	int* qmax = &max;
+
+	cout << "값 5개를 나열하세요 : ";
+
+	for (int i = 0; i < 5; i++)
+	{
+		cin >> iArray[i];
+	}
+	
+	MinMax(iArray, &qmax);
+
+	cout << endl;
+	cout << "최대 값은: " << * qmax << endl;
+	}
+
+void MinMax(int* iArray, int** max)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		if (**max < iArray[i])
+		{
+			**max = iArray[i];
+		}
+	}
+}
