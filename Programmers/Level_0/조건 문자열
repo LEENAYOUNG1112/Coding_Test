@@ -1,0 +1,23 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(string ineq, string eq, int n, int m) 
+{
+    // 입력 string이 부호랑 비슷한지 봐야 한다.
+    int answer = 0;
+    if((ineq == "<" && eq == "=" && n<=m)
+    || (ineq == ">" && eq == "=" && n>=m)
+    || (ineq == ">" && eq == "!" && n>m)
+    || (ineq == "<" && eq == "!" && n<m))
+       {
+           answer = 1;
+       }
+       else 
+       {
+           answer = 0;
+       }
+       
+       return answer;
+}
