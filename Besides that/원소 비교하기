@@ -1,0 +1,71 @@
+//정수가 담긴 리스트 num_list가 주어질 때, 모든 원소들의 곱이 모든 원소들의 합의 
+//제곱보다 작으면 1을 크면 0을 return하도록 solution 함수를 완성해주세요.
+
+int HAB(int* iList, int** qHab);
+int JAGOB(int* iList, int** qJagob);
+int compare(int** hap, int** jagob);
+int main()
+{
+	int num_list[5];
+	int jagob(1);
+	int hab(0);
+
+	int* qJagob = &jagob;
+	int* qHab = &hab;
+
+	for (int i = 0; i < 5; i++)
+	{
+		cin >> num_list[i];
+	}
+
+	HAB(num_list, &qHab);
+	JAGOB(num_list, &qJagob);
+	cout << compare(&qHab, &qJagob) << endl;
+
+}
+
+int HAB(int* iList, int** qHab)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		**qHab += iList[i];
+	}
+	**qHab *= **qHab;
+
+	return **qHab;
+}
+
+int JAGOB(int* iList, int** qJagob)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		**qJagob *= iList[i];
+	}
+
+	return **qJagob;
+}
+
+int compare(int** hap, int** jagob)
+{
+	if (**hap > **jagob)
+		return 0;
+	
+	else if (**hap < **jagob)
+		return 1;
+}
+int main(void) {
+    int n;
+
+    cin >> n;
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < i + 1; j++)
+        {
+            cout << "*";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
