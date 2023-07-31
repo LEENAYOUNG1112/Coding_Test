@@ -1,0 +1,99 @@
+#include<iostream>
+
+using namespace std;
+
+const int SIZE = 5;
+int PLAYER_Y = 0;
+int PLAYER_X = 0;
+int	Move(int(*iArray)[SIZE]);
+void Swap(int y, int x, int(*iArray)[SIZE]);
+
+bool Distincted(int y, int x);
+
+int main()
+{
+	int iArray[SIZE][SIZE] =
+	{
+		{ 0, 1 ,2 ,3 ,4 },
+		{ 5, 6, 7, 8, 9 },
+		{10, 11, 12, 13, 14},
+		{15, 16 ,17, 18, 19},
+		{20, 21, 22, 23, 24}
+	};
+
+	while(1)
+	{
+		cout << "     ▶ [0] 이 움직이는 공간 ◀" << endl;
+		// 맵 만들기
+		for (int i = 0; i < SIZE; i++)
+		{
+			for (int j = 0; j < SIZE; j++)
+			{
+				cout << iArray[i][j] << "	";
+			}
+			cout << endl;
+		}
+
+		Move(iArray);
+	}
+
+}
+
+// 키보드 입력
+int Move(int(*iArray)[SIZE]) 
+{
+	int Input;
+
+	cin >> Input;
+
+	system("cls");
+
+	int x = PLAYER_X;
+	int y = PLAYER_Y;
+
+	switch (Input)
+	{
+	case 2 :
+		if(Distincted(y + 1, x))
+			Swap(y + 1, x, iArray);
+		break;
+	case 4 :
+		if (Distincted(y, x - 1))
+			Swap(y, x - 1, iArray);
+		break;
+	case 6 :
+		if (Distincted(y, x + 1))
+			Swap(y, x + 1, iArray);
+		break;
+	case 8 :
+		if (Distincted(y - 1, x))
+			Swap(y - 1, x, iArray);
+		break;
+	default : 
+		cout << "▶ 잘못 누르셨습니다. 다시 한 번 눌러주세요 ◀" << endl;
+	}
+	return 0;
+}
+
+void Swap(int y, int x, int(*iArray)[SIZE])
+{
+	int tmp;
+
+	tmp = iArray[PLAYER_Y][PLAYER_X];
+	iArray[PLAYER_Y][PLAYER_X] = iArray[y][x];
+	iArray[y][x] = tmp;
+
+	PLAYER_Y = y;
+	PLAYER_X = x;
+
+}
+
+bool Distincted(int y, int x)
+{
+	if (y<0 || y >= SIZE)
+		return false;
+	if (x < 0 || x >= SIZE)
+		return false;
+	else
+		return true;
+}
