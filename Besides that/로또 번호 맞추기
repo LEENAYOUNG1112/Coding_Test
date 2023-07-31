@@ -60,10 +60,11 @@ void Randomlotto()
 				found = true;
 				break;
 			}
-			else
-			{
-				found = false;
-			}
+		}
+
+		if(found == false)
+		{
+			found = false;
 		}
 		int* qRandomChoice = randomChoice;
 	}
