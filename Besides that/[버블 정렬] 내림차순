@@ -1,0 +1,43 @@
+#include<iostream>
+
+using namespace std;
+
+const int SIZE = 7;
+
+void DeSort(int* qArr);
+
+int main()
+{
+	int arr[SIZE];
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		cin >> arr[i];
+	}
+
+	int* qArr = arr;
+	DeSort(qArr);
+
+	for(int i = 0; i < SIZE;i++)
+	{
+		cout << qArr[i];
+	}
+}
+
+void DeSort(int qArr[])
+{
+	int tmp;
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		for (int j = 0; j < SIZE - i - 1; j++)
+		{
+			if (qArr[j] < qArr[j + 1])
+			{
+				tmp = qArr[j + 1];
+				qArr[j + 1] = qArr[j];
+				qArr[j] = tmp;
+			}
+		}
+	}
+}
