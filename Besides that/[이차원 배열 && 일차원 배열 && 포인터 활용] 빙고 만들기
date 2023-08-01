@@ -1,3 +1,4 @@
+//================ 이차원 배열 + 포인터 ==================
 #include<iostream>
 
 using namespace std;
@@ -187,4 +188,161 @@ int Compare(int(*qArray)[SIZE], int* qBingo)
 		}
 	}
 	return 0;
+}
+
+
+
+//================ 일차원 배열 ==================
+
+#include<iostream>
+
+using namespace std;
+
+int Map();
+int InGame(int* iMap, int* qDie);
+
+int main()
+{
+	Map();
+}
+
+int Map()
+{
+	const int SIZE = 25;
+	int iMap[SIZE] = { };
+	int iChoice;
+	int iDie(0);
+
+	int* qDie = &iDie;
+
+	// 숫자 지정
+	for (int i = 1; i <= 25; i++)
+	{
+		iMap[i - 1] = i;
+	}
+
+	while(1)
+	{
+		system("cls");
+
+		// 맵 출력
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				if (iMap[i * 5 + j] == 0)
+				{
+					cout << "*" << "\t";
+				}
+				else 
+					cout << iMap[i * 5 + j] << '\t';
+			}
+			cout << endl;
+		}
+
+		// 숫자 입력
+		cin >> iChoice;
+
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				if (iMap[i * 5 + j] == iChoice)
+				{
+					iMap[i * 5 + j] = 0;
+				}
+			}
+		}
+
+		if (*qDie == 1)
+		{
+			cout << "FIVE BINGO!" << endl;
+			return 0;
+		}
+			
+		// 빙고 게임시작
+		InGame(iMap, qDie);
+	}
+}
+
+// BINGO 계산
+int InGame(int* iMap, int* qDie)
+{
+	// 빙고 초기화
+	int Bingo(0);
+	int iCount(0);
+
+	// 가로
+	for(int i = 0; i < 5; i++)
+	{
+		for(int j = 0; j < 5; j++)
+		{
+			if (iMap[i * 5 + j] == 0)
+				iCount++;
+
+			if (iCount == 5)
+			{
+				Bingo++;
+			}
+		}
+		iCount = 0;
+	}
+
+	// 세로
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			if (iMap[j * 5 + i] == 0)
+				iCount++;
+
+			if (iCount == 5)
+			{
+				Bingo++;
+			}
+		}
+		iCount = 0;
+	}
+
+
+	// 대각선
+	for (int i = 0; i < 5; i++)
+	{
+		if (iMap[i * 6] == 0)
+			iCount++;
+
+		if (iCount == 5)
+		{
+			Bingo++;
+		}
+	}
+	iCount = 0;
+
+
+	//역대각선
+	for (int i = 0; i < 5; i++)
+	{
+		if (iMap[i * 4 + 4] == 0)
+			iCount++;
+
+		if (iCount == 5)
+		{
+			Bingo++;
+		}
+	}
+	iCount = 0;
+
+
+	if (Bingo == 5)
+	{
+		*qDie = 1;
+	}
+	else
+	{
+		cout << Bingo << "BINGO!" << endl;
+		system("pause");
+	}
+	
+	return 0;
+	
 }
