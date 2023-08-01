@@ -1,0 +1,25 @@
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	const int SIZE = 34;
+	char iArray[SIZE];
+	char iBrray[SIZE];
+	int iCount(0);
+
+	cin >> iArray;
+
+	while (iArray[iCount] != '\0')
+	{
+		iCount++;
+	}
+
+	for (int i = 0; i < iCount; i++)
+	{
+		iBrray[iCount - i - 1] = iArray[i];
+	}
+	iBrray[iCount] = '\0';
+
+	cout << iBrray << endl;
+}
