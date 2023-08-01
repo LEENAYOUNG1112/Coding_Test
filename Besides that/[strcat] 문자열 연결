@@ -1,0 +1,30 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+int main()
+{
+  char str1[] = "Hi ";
+	char str2[] = "Nice To Meet You";
+	char str3[30];
+
+	int iCount(0);
+	int index(0);
+
+	while (str1[iCount] != '\0')
+	{
+		str3[iCount] = str1[iCount];
+		iCount++;
+	}
+	
+	str3[iCount+2] = '\0';
+
+	while (str2[index] != '\0')
+	{
+		str3[iCount+index] = str2[index];
+		index++;
+	}
+	str3[iCount + index] = '\0';
+	cout << str3 << endl;
+}
