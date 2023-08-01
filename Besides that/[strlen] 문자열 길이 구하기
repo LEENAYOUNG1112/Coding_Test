@@ -1,0 +1,20 @@
+#include<iostream>
+using namespace std;
+
+const int SIZE = 100;
+
+int main()
+{
+	char iArray[SIZE];
+	int iCount = 0;
+	
+	cin >> iArray;
+
+	while (iArray[iCount] != '\0')
+	{
+		iCount++;
+	}
+
+	cout << iCount << endl;
+
+}
