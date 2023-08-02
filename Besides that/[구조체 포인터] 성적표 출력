@@ -1,0 +1,122 @@
+#include<iostream>
+using namespace std;
+
+typedef struct tagInfo
+{
+	char cName[32]; // 이름
+	int iKor;	    // 국어
+	int iEng;		//영어
+	int iMath;		//수학
+	
+}tInfo;
+
+enum Choice
+{
+	e_Input = 1,
+	e_Print = 2,
+	e_Exit = 3
+};
+// 구조체 사용 : 이 놈을 구조체 위에 둬서 자꾸 에러났었음
+int Menu();
+
+int Choice(int*, tInfo*);
+int Input(tInfo* qInfo);
+int Print(tInfo* qInfo);
+
+
+int main()
+{
+	Menu();
+}
+
+int Menu()
+{
+	while(1)
+	{	
+		int iChoice;
+
+		cout << "=========================" << endl;
+		cout << "[1] 입력" << endl;
+		cout << "[2] 검색" << endl;
+		cout << "[3] 종료" << endl;
+		cout << "=========================" << endl;
+		cin >> iChoice;
+
+		int* qChoice = &iChoice;
+
+		if (*qChoice == 3)
+			return 0;
+
+		tInfo Info[3]; // 이걸 안해줘서 헤맴
+
+		Choice(qChoice, Info);
+
+	}
+}
+
+int Choice(int* qChoice, tInfo* qInfo)
+{
+	switch (*qChoice)
+	{
+	case e_Input:			// 포인터로 넘길 때는 주소를 넘긴다
+		Input(qInfo); // 첫번 째 주소를 가리킨다. 
+		break;
+	case e_Print:
+		Print(qInfo);
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+int Input(tInfo* qInfo)
+{
+	static int sStudent(0);
+	
+	if(sStudent < 3)
+	{
+		cout << "[이름] [국어] [영어] [수학] " << endl;
+		cin >> qInfo[sStudent].cName >> qInfo[sStudent].iKor >> qInfo[sStudent].iEng >> qInfo[sStudent].iMath;
+		sStudent++;
+	}
+	else
+	{
+		cout << "▶ 학생이 꽉 찼습니다" << endl;
+		cout << endl;
+	}
+	return 0;
+}
+
+int Print(tInfo* qInfo)
+{
+	char iName[32];
+	
+	int iCount(0);
+	int iSum;
+	float iAvg;
+
+	cout << "▶ 검색할 학생의 이름을 입력해 주세요" << endl;
+	cin >> iName;
+	cout << endl;
+	
+	for (int i = 0; i < 3; i++)
+	{
+		if (strcmp(qInfo[i].cName, iName) == 0)
+		{
+			cout << "[이름]  [국어]  [영어]  [수학]  [총점]  [평균]" << endl;
+			iSum = qInfo[i].iKor + qInfo[i].iEng + qInfo[i].iMath;
+			iAvg = (float)iSum / 3;
+
+			cout<< qInfo[i].cName << "\t " << qInfo[i].iKor << "\t "  << qInfo[i].iEng << "\t "  << qInfo[i].iMath << "\t " << iSum << "\t " << iAvg << endl;
+			iCount = 1;
+			cout << endl;
+		}
+	}
+	if(iCount == 0)
+	{
+		cout << "▶ 학생을 찾을 수 없습니다" << endl;
+		cout << endl;
+	}
+	
+	return 0;
+}
