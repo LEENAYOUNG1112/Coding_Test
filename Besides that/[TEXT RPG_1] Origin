@@ -1,0 +1,201 @@
+#include <iostream>
+using namespace std;
+
+enum _PLAYER
+{
+	None,
+	Knight,
+	Magic,
+	Bandit
+};
+
+typedef struct tagINFO
+{
+	char iName[23];
+	int iHp;
+	int iAttack;
+
+}INFO;
+
+// 구조체
+INFO Monster;
+INFO Player;
+
+// 함수
+int PlayStart();
+void StatBar();
+int GameStart();
+void GameLevel();
+void MonsterBar();
+int Battle();
+
+int main()
+{
+	PlayStart();
+	GameStart();
+}
+
+/// <summary> 직업 선택 </summary>
+int PlayStart()
+{
+	int iChoice;
+	
+	cout << "직업을 선택하세요" << endl;
+	cout << "[1] 전사" << endl;
+	cout << "[2] 마법사 " << endl;
+	cout << "[3] 도적" << endl;
+	cout << "> ";
+
+	cin >> iChoice;
+
+	
+	switch (iChoice)
+	{
+	case Knight:
+		cout << "전사 캐릭터 생성 중..." << endl;
+		strcpy_s(Player.iName, "전사");
+		Player.iHp = 100;
+		Player.iAttack = 10;
+		break;
+
+	case Magic :
+		cout << "마법사 캐릭터 생성 중..." << endl;
+		strcpy_s(Player.iName, "마법사");
+		Player.iHp = 80;
+		Player.iAttack = 20;
+		break;
+
+	case Bandit :
+		cout << "도적 캐릭터 생성 중..." << endl;
+		strcpy_s(Player.iName, "도적");
+		Player.iHp = 90;
+		Player.iAttack = 15;
+		break;
+	}
+
+	system("pause");
+	system("cls");
+
+	return 0;
+}
+
+/// <summary> 플레이어 상태바 </summary>
+void StatBar()
+{
+	cout << "이름 : " << Player.iName << endl;
+	cout << "체력 : " << Player.iHp << "\t" << "공격력 : " << Player.iAttack << endl;
+	cout << "==============================" << endl;
+
+}
+
+/// <summary> 게임 시작 </summary>
+int GameStart()
+{
+	StatBar();
+
+	int iChoice;
+	cout << "[1] 사냥터" << "\t" << "[2] 종료" << endl;
+
+	cin >> iChoice;
+
+	system("cls");
+
+	if (iChoice == 1)
+	{
+		GameLevel();
+
+		while(1)
+		{
+			MonsterBar();
+			Battle();
+		}
+	}
+	else
+		return 0;
+	return 0;
+}
+
+/// <summary> 게임 레벨 </summary>
+void GameLevel()
+{
+	StatBar();
+
+	int iChoice;
+
+	cout << "[1] 초급" << "\t" << "[2] 중급" << "\t" << "[3] 고급" << "\t" << "[4] 전단계" << endl;
+	cin >> iChoice;
+
+	switch (iChoice)
+	{
+	case 1 : 
+		cout << "초급 사냥터를 만들고 있습니다.." << endl;
+		strcpy_s(Monster.iName, "슬라임");
+		Monster.iHp = 30;
+		Monster.iAttack = 3;
+		break;
+
+	case 2:
+		cout << "중급 사냥터를 만들고 있습니다.." << endl;
+		strcpy_s(Monster.iName, "스켈레톤");
+		Monster.iHp = 60;
+		Monster.iAttack = 6;
+		break;
+
+	case 3 :
+		cout << "고급 사냥터를 만들고 있습니다.." << endl;
+		strcpy_s(Monster.iName, "고블린");
+		Monster.iHp = 30;
+		Monster.iAttack = 3;
+		break;
+	}
+	system("pause");
+	system("cls");
+}
+
+/// <summary> 몬스터 상태바 </summary>
+void MonsterBar()
+{
+	StatBar();
+
+	cout << "이름 : " << Monster.iName << endl;
+	cout << "체력 : " << Monster.iHp << "\t" << "공격력 : " << Monster.iAttack << endl;
+	cout << "==============================" << endl;
+
+}
+
+
+/// <summary> 배틀 </summary>
+int Battle()
+{
+	int iChoice;
+	cout << "[1] 공격" << "\t" << "[2] 도망" << endl;
+	cin >> iChoice;
+
+	// 공격 시 bar에서 실시간으로 깎이는 것이 보인다
+	if (iChoice == 1)
+	{
+		Monster.iHp -= Player.iAttack;
+		Player.iHp -= Monster.iAttack;
+
+		if (Player.iHp < 0)
+		{
+			cout << "사망하였습니다" << endl;
+			system("pause");
+			system("cls");
+			PlayStart();
+		}
+		else if(Monster.iHp < 0)
+		{
+			cout << "승리하였습니다" << endl;
+			system("pause");
+			system("cls");
+
+			GameLevel();
+		}
+	}
+	else
+		GameStart();
+
+	system("cls");
+	return 0;
+}
