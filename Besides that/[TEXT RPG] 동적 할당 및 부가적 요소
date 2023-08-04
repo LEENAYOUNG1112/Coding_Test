@@ -1,0 +1,520 @@
+// 수정 예정
+//============
+#include <iostream>
+using namespace std;
+
+typedef struct tag_Info
+{
+	char iName[32];
+	int iHp;
+	int Attack;
+	int Defence;
+	int Gold;
+
+}INFO;
+
+enum Job
+{
+	WARRIOR = 1,
+	WIZARD,
+	THIEF
+};
+
+enum Move
+{
+	Down = 2,
+	Left = 4,
+	Right = 6,
+	Up = 8
+};
+
+// 배열은 무조건 상수
+const int SIZEY = 5;
+const int SIZEX = 10;
+
+int iMap[SIZEY][SIZEX] = {
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 0, 0, 0, 0, 4, 0, 0, 0, 1 },
+		{ 4, 2, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+};
+
+
+// 플레이어 위치
+int PlayerX = 1;
+int PlayerY = 2;
+
+//함수
+int GameStart();
+
+void SelectJob(INFO* Player);
+void StatBar(INFO* character);
+int WaitingRoom();
+
+int Switch(int(*iMap)[SIZEX]);
+void Map1();
+bool MovePlayer(int y, int x);
+void Swap(int y, int x, int(*iMap)[SIZEX]);
+
+void Store(INFO* Player);
+int EnterDungeon(INFO* Player, INFO* Monster);
+
+//배틀 게임
+void CreateMonster(INFO* Monster);
+int BattleMap();
+int BattleGame(INFO* Player, INFO* Monster);
+void BattleSwap(int y, int x, int(*BattleMap)[15]);
+
+int main()
+{
+	INFO* Player = new INFO();
+	INFO* Monster = new INFO();
+
+	if(GameStart() == 1)
+	{
+		// 캐릭터 만들기
+		SelectJob(Player); // 직업 생성
+		StatBar(Player); // 플레이어 상태바 생성
+	}
+
+	if(WaitingRoom() == 1) // 만약 플레이어가 생성된다면
+	{	
+		while(true)
+		{
+			StatBar(Player);
+			// 맵 만들기
+			Map1();
+			Switch(iMap);
+			system("cls");
+
+			if (iMap[PlayerY][PlayerX] == iMap[2][9]) // 세모에 닿을 시 게임 시작
+			{
+				system("cls");
+				StatBar(Player);
+				EnterDungeon(Player, Monster);
+			}
+			if (iMap[PlayerY][PlayerX] == iMap[1][5]) // 다중 네모에 닿을 시 상점가
+			{
+				system("cls");
+				Store(Player);
+			}
+			if (iMap[PlayerY][PlayerX] == iMap[2][0]) // 게임을 종료합니다
+			{
+				cout << "게임을 종료합니다" << endl;
+				return 0;
+			}
+		}
+	}
+}
+
+int GameStart()
+{
+	int iChoice;
+	cout << endl;
+	cout << "[1] 게임 하기" << endl;
+	cout << "[2] 불러 오기" << endl;
+	cout << "[3] 종료 하기" << endl;
+	cin >> iChoice;
+
+	switch (iChoice)
+	{
+	case 1 :
+		return 1;
+		system("cls");
+		break;
+	case 2 :
+		break;
+	case 3:
+		return 0;
+	}
+}
+
+void SelectJob(INFO* Player)
+{
+	system("cls");
+	int iChoice;
+
+	cout << "직업을 골라주세요" << endl;
+	cout << "[1] 전사" << endl;
+	cout << "[2] 마법사" << endl;
+	cout << "[3] 도적" << endl;
+	cout << "> ";
+	cin >> iChoice;
+
+	//NicName이라는 하나의 주소에 다양한 주소값을 넣는다. 히든 닉네임 사용 시 쓰일 예정
+	const char cNicName_warrior[32] = "전사";
+	const char cNicName_wizard[32] = "마법사";
+	const char cNicName_Thief[32] = "도적";
+	
+	const char* NicName = cNicName_warrior;
+
+	switch (iChoice)
+	{
+	case WARRIOR :
+		cout << endl;
+		cout << "전사 캐릭터 불러오는 중 ..." << endl;
+		system("pause");
+
+		strcpy_s(Player->iName, sizeof(Player->iName), NicName);
+		Player->iHp = 130;
+		Player->Attack = 10;
+		Player->Defence = 2;
+		Player->Gold = 100;
+		break;
+
+	case WIZARD :
+		cout << endl;
+		cout << "마법사 캐릭터 불러오는 중 ..." << endl;
+		system("pause");
+
+		NicName = cNicName_wizard;
+		strcpy_s(Player->iName, sizeof(Player->iName), NicName);
+		Player->iHp = 130;
+		Player->Attack = 10;
+		Player->Defence = 2;
+		Player->Gold = 100;
+		break;
+
+	case THIEF :
+		cout << endl;
+		cout << "도적 캐릭터 불러오는 중 ..." << endl;
+		system("pause");
+
+		NicName = cNicName_Thief;
+		strcpy_s(Player->iName, sizeof(Player->iName), NicName);
+		Player->iHp = 130;
+		Player->Attack = 10;
+		Player->Defence = 2;
+		Player->Gold = 100;
+		break;
+		
+	}
+}
+
+int WaitingRoom()
+{
+	system("cls");
+	int iChoice;
+	cout << "입장하시겠습니까?" << endl;
+	cout << "[1] 예" << endl;
+	cout << "[2] 아니오" << endl;
+	cin >> iChoice;
+
+	system("cls");
+	return iChoice;
+
+}
+
+void StatBar(INFO* character)
+{
+	cout << "닉네임 : " << character->iName << endl;
+	cout << "HP : " << character->iHp << "\tATTACK : " << character->Attack << "\tDEFENCE : " << character->Defence << endl;
+	cout << "GOLD : " << character->Gold << endl;
+	cout << "========================================== " << endl;
+	cout << endl;
+
+}
+
+
+// 맵 보여주기
+void Map1()
+{
+	for (int y = 0; y < 5; y++)
+	{
+		for (int x = 0; x < 10; x++)
+		{
+			switch (iMap[y][x])
+			{
+			case 0:
+				cout << "□";
+				break;
+			case 1 :
+				cout << "■";
+				break;
+			case 2 :
+				cout << "●";
+				break;
+			case 3 :
+				cout << "▶";
+				break;
+			case 4:
+				cout << "▣";
+				break;
+			}
+		}
+		cout << "\t" << endl;
+	}
+}
+
+int Switch(int (*iMap)[SIZEX])
+{
+	int iCount;
+	cin >> iCount;
+
+	int x = PlayerX;
+	int y = PlayerY;
+
+	switch (iCount)
+	{
+	case Down:
+		if(MovePlayer(y + 1, x))
+			Swap(y + 1, x, iMap);
+		break;
+
+	case Left:
+		if(MovePlayer(y, x - 1))
+			Swap(y, x - 1, iMap);
+		break;
+
+	case Right:
+		if(MovePlayer(y, x + 1))
+			Swap(y, x + 1, iMap);
+		break;
+
+	case Up:
+		if(MovePlayer(y - 1, x))
+			Swap(y - 1, x, iMap);
+		break;
+	}
+	return 0;
+
+}
+
+bool MovePlayer(int y, int x)
+{
+
+	if (iMap[y][x] == 1) // Player가 1,4 이면 false
+		return false;
+
+	if (0 < x || 0 < y || y < SIZEY || x < SIZEX || iMap[y][x] == 0 || iMap[y][x] == 3)
+		return true;
+
+	if (x <= 0 || x >= SIZEX) // x가 0보다 작거나 SIZE보다 크면 false
+		return false;
+
+	if (y <= 0 || y >= SIZEY) // y가 0보다 작거나 SIZE보다 크면 false
+		return false;
+}
+
+void Swap(int y, int x, int(*iMap)[SIZEX])
+{
+	int tmp;
+
+	tmp = iMap[PlayerY][PlayerX];
+	iMap[PlayerY][PlayerX] = iMap[y][x];
+	iMap[y][x] = tmp;
+	
+	PlayerY = y;
+	PlayerX = x;
+
+}
+
+int EnterDungeon(INFO* Player, INFO* Monster)
+{
+	system("cls");
+	int iChoice;
+	StatBar(Player);
+
+	cout << "던전 입구입니다. 맵을 선택해주세요" << endl;
+	cout << endl;
+
+	cout << "[1] 매호의 동굴 [초급]" << endl;
+	cout << "[2] 오버로드 던전 [중급]" << endl;
+	cout << "[3] 스페이스 킹덤 [고급]" << endl;
+	cout << "[4] 대기실로 돌아가기" << endl;
+	cin >> iChoice;
+
+	switch (iChoice)
+	{
+	case 1 : 
+		cout << endl;
+		cout << "tip. 이 던전 게임은 많이 쉽습니다..." << endl; // 단순 전투 게임
+		system("pause");
+		BattleGame(Player, Monster);
+		break;
+
+	case 2:
+		cout << endl;
+		cout << "tip. 오버로드에게 다가가려면 일부 공략이 필요합니다..." << endl; // 전투 + 야구 게임
+		system("pause");
+		break;
+
+	case 3:
+		cout << endl;
+		cout << "tip. 스페이스 킹덤은 혼란을 야기할 수 있습니다..." << endl; // 팩맨
+		system("pause");
+		break;
+
+	case 4:
+		system("cls");
+		return 0;
+	}
+	return 0;
+}
+
+// 몬스터 만들기
+void CreateMonster(INFO* Monster)
+{
+	// 3은 쫄병 4는 간부 5는 보스
+}
+
+int player_x = 1;
+int player_y = 7;
+
+int BattleMap()
+{
+	int iCount;
+
+	static int _BattleMap[15][15] = 
+	{
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{6, 2, 0, 3, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	
+	};
+
+	for (int y = 0; y < 15; y++)
+	{
+		for (int x = 0; x < 15; x++)
+		{
+			switch (_BattleMap[y][x])
+			{
+			case 0 :
+				cout << "□";
+				break;
+			case 1 :
+				cout << "■";
+				break;
+			case 2 :
+				cout << "●";
+				break;
+			case 3 :
+				cout << "◇";
+				break;
+			case 4:
+				cout << "◆";
+				break;
+			case 5:
+				cout << "◈";
+				break;
+			case 6:
+				cout << "▣";
+				break;
+			}
+		}
+		cout << "\t" << endl;
+	}
+
+	cin >> iCount;
+	
+	// 다음 이동 순서
+	int x = player_x;
+	int y = player_y;
+
+	// 키 관리
+	switch (iCount)
+	{
+	case Down:
+		//if (MovePlayer(y + 1, x))
+			BattleSwap(y + 1, x, _BattleMap);
+		break;
+
+	case Left:
+		//if (MovePlayer(y, x - 1))
+			BattleSwap(y, x - 1, _BattleMap);
+		break;
+
+	case Right:
+		//if (MovePlayer(y, x + 1))
+			BattleSwap(y, x + 1, _BattleMap);
+		break;
+
+	case Up:
+		//if (MovePlayer(y - 1, x))
+			BattleSwap(y - 1, x, _BattleMap);
+		break;
+	}
+
+	if (_BattleMap[player_y][player_x] == _BattleMap[7][0])
+	{
+		return 1;
+	}
+
+}
+
+void BattleSwap(int y, int x, int(*BattleMap)[15])
+{
+	int tmp;
+	tmp = BattleMap[player_y][player_x];
+	BattleMap[player_y][player_x] = BattleMap[y][x];
+	BattleMap[y][x] = tmp;
+
+	player_y = y;
+	player_x = x;
+}
+
+//매호 배틀
+int BattleGame(INFO* Player, INFO* Monster)
+{
+	CreateMonster(Monster);
+	while(true)
+	{
+		system("cls");
+		StatBar(Player);
+		if (BattleMap() == 1)
+		{
+			cout << "당신은 도망치기로 결정했습니다" << endl;
+			system("pause");
+			system("cls");
+			return 0;
+		}
+		//else if 맵이 2일 시 승리 3일시 패배
+		
+		//만약 부딪히면 배틀 시작
+	}
+	return 0;
+}
+
+// 상점
+void Store(INFO* Player)
+{
+	int iChoice;
+	StatBar(Player);
+	cout << "어서오세요! 즐거운 'JUSIN 상점가' 입니다!" << endl;
+	cout << "무엇을 도와드릴까요?" << endl;
+	cout << endl;
+	cout << "[1] 물건을 좀 사고 싶은데" << endl;
+	cout << "[2] 다음에 올게요!" << endl;
+
+	cin >> iChoice;
+
+	if (iChoice == 1)
+	{
+		//물건과 되돌리기
+	}
+	else if (iChoice == 2)
+	{
+		int tmp;
+		//맵 상의 상점 자리를 되돌린다. : 실패
+		tmp = iMap[PlayerY][PlayerX];
+		iMap[PlayerY][PlayerX] = iMap[1][5];
+		iMap[1][5] = tmp;
+
+		system("cls");
+		return;
+	}
+	
+}
