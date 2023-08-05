@@ -1,0 +1,59 @@
+#include <iostream>
+
+using namespace std;
+
+typedef struct tag
+{
+	char iName[20];
+	int iMath;
+	int iEng;
+	int iKor;
+	float iAvg;
+}INFO;
+
+int main() {
+
+	INFO* info = new INFO;
+	char* qName[20];
+
+	while(true)
+	{
+		int iChoice;
+
+		cout << endl;
+		cout << "이름은?" << endl;
+		cin >> info->iName;
+		cout << "영어, 국어, 수학 성적" << endl;
+
+		cin >> info->iEng;
+		cin >> info->iKor;
+		cin >> info->iMath;
+		cout << endl;
+
+		info->iAvg = ((float)info->iEng + (float)info->iKor + (float)info->iMath) / 3;
+
+		cout << "이름: " << info->iName << endl;
+		cout << "영어 국어 수학 : " << info->iEng <<" " << info->iKor << " " << info->iMath << endl;
+		cout << "총점은 " << info->iAvg << endl;
+
+		if (info->iAvg >= 70)
+		{
+			cout << "공부를 열심히 한 친구 입니다" << endl;
+		}
+		else if (info->iAvg < 70)
+		{
+			cout << "공부를 좀 더 열심히 해야 겠네요" << endl;
+		}
+		
+		cout << "계속하시려면 1번을 눌러주세요" << endl;
+		cin >> iChoice;
+
+		if (iChoice != 1)
+			return 0;
+
+		system("pause");
+	}
+
+	delete(info);
+	info = nullptr;
+}
