@@ -1,0 +1,85 @@
+void GameStart()
+{
+	INFO info;
+	INFO* Player = &info;
+
+	// Monster 
+	INFO* Monster = new INFO[10];
+
+	int iChoice;
+
+	while(true)
+	{
+		cout << "[1] 게임 시작" << endl;
+		cout << "[2] 이어 하기" << endl;
+		cout << "[3] 종료 하기" << endl;
+
+		cout << "> ";
+		cin >> iChoice;
+
+		if (iChoice == 1)
+		{
+			JobSelect(Player);	// 직업 선택
+			Field(Player, Monster);		// 필드 들어가기
+		}
+		else if (iChoice == 2)
+		{
+			if (!Load(Player))
+			{
+				cout << endl << "PAYLER DATA ERRER!" << endl;
+
+			}
+			cout << "SUCCESS PLAYER LOAD" << endl;
+			Field(Player, Monster);
+		}
+		else
+		{
+			return;
+		}
+	}
+}
+
+// 불러오기
+bool Load(INFO* Player)
+{
+	FILE* pLoad = NULL;
+
+	errno_t errLoad = fopen_s(&pLoad, "player.txt", "rb");
+
+	if (0 == errLoad)
+	{
+		fread(&Player->iName, sizeof(&Player->iName), 1, pLoad);
+		fread(&Player->iHp, sizeof(int), 4, pLoad);
+		fread(&Player->iDefence, sizeof(int), 1, pLoad);
+		fread(&Player->iAttack, sizeof(int), 1, pLoad);
+		fread(&Player->iGold, sizeof(int), 1, pLoad);
+
+		fclose(pLoad);
+		return true;
+	}
+	return false;
+	
+}
+
+// 저장하기
+bool Save(INFO* Player)
+{
+	FILE* pSave = NULL;
+	
+	//이게 몰까
+	errno_t errSave = fopen_s(&pSave, "player.txt", "wb");
+
+	if (0 == errSave)
+	{
+		fwrite(&Player->iName, sizeof(&Player->iName), 1, pSave);
+		fwrite(&Player->iHp, sizeof(int), 1, pSave);
+		fwrite(&Player->iDefence, sizeof(int), 1, pSave);
+		fwrite(&Player->iAttack, sizeof(int), 1, pSave);
+		fwrite(&Player->iGold, sizeof(int), 1, pSave);
+
+		fclose(pSave);
+		return true;
+	}
+	return false;
+
+}
