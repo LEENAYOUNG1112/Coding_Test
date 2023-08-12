@@ -3,16 +3,31 @@
 #include <time.h> // time()함수 포함 라이브러리
 
 using namespace std;
+using std::cout;
+using std::endl;
+using std::cin;
+using std::system;
 
+const int NAMESIZE = 32;
 /// <summary> 상태 </summary>
 typedef struct tag_Info
 {
-	char iName[32];
+	char iName[NAMESIZE];
 	int iHp = 100;
 	int iDefence;
 	int iAttack;
 	int iGold;
 }INFO;
+
+/// <summary> 아이템 포션 능력치 </summary>
+typedef struct tag_PotionStat
+{
+	char iName[32];
+	int PotionHp;
+	int Defence;
+	int Attack;
+
+}PotionStat;
 
 /// <summary> 직업 </summary>
 enum Job
@@ -23,15 +38,18 @@ enum Job
 };
 
 /// <summary> 사물 </summary>
-enum Thing
+typedef struct tag_Thing
 {
-	RedPotion = 1,
-	GreenPotion,
-	BluePotion,
-	Sword,
-	Magicpipe,
-	Arrow,
-};
+	int RedPotion	= 0;
+	int GreenPotion = 0;
+	int BluePotion  = 0; 
+	int Sword		= 0; 
+	int Magicpipe	= 0; 
+	int Arrow		= 0; 
+
+}Item;
+
+
 
 // 함수 (앞으로 인자를 3개 이상 가지는 것에 유의 하자)
 
@@ -42,7 +60,7 @@ void StatBar(INFO* characterInfo); // 캐릭터 상태바
 
 /// <summary> 맵 생성 </summary>
 int Field(INFO* Player, INFO* Monster); // 필드 들어가기
-void BattleMap(INFO* Player, INFO* Monster); //맵 선택
+void BattleMap(INFO* Player, INFO* Monster, Item* sItem); //맵 선택
 
 /// <summary> 몬스터 생성 </summary>
 void CreateMonster(INFO* Monster, int iChoice, int* RandomNumber); // 몬스터 난이도 생성
@@ -50,17 +68,26 @@ void MonsterName(int* RandomNumber, INFO* nMonster); // 몬스터 이름
 
 /// <summary> 배틀 </summary>
 int BattleChoice(INFO* Player, INFO* Monster, bool* iWin); // 전투 선택
-int BattleStart(INFO* Player, INFO* Monster, bool* pWin, int* RandomNumber); // 배틀 시작
+int BattleStart(INFO* Player, INFO* Monster, bool* pWin, int* RandomNumber, Item* sItem); // 배틀 시작
 
 /// <summary> 인벤토리 </summary>
-void Inventory(INFO* Player, int BagSize[]); // 인벤토리
-void UseItem(INFO* Player, int* iChoice);// 아이템 사용하기
+void Inventory(INFO* Player, int BagSize[], Item* sItem); // 인벤토리
+void UseItem(INFO* Player, int* iChoice, bool* Jobhint, Item* sItem);// 아이템 사용하기
 
 /// <summary> 상점 </summary>
-void Store(INFO* Player, int* Bag, int* BagSize); // 상점 들어가기
-int SmallTalk(); // 주인장과 대화
-void StoreIN(INFO* Player, int* Bag, int* BagSize); // 상점 내부
+void Store(INFO* Player, int* Bag, int* BagSize, Item* sItem, bool* iBattleReturn); // 상점 들어가기
+int SmallTalk(INFO* Player, bool* iBattleReturn); // 주인장과 대화
+void StoreIN(INFO* Player, int* Bag, int* BagSize, Item* sItem); // 상점 내부
 int ReturnSelect(INFO* Player, int* qGold); // 구입 여부
+void Owner(INFO* Player, INFO* onwer); // 주인장 상태
+int BattleOwner(INFO* Player, INFO* owner, bool* iBattleReturn); // 주인장 배틀 시작
+bool BattleOnwerChice(bool* iBattleReturn);  
+
+/// <summary> 로드/세이브 </summary>
+bool Load(INFO* Player);
+bool Save(INFO* Player);
+
+
 
 /// <summary> 메인 함수 </summary>
 int main()
@@ -74,7 +101,7 @@ void GameStart()
 {
 	// Player 구조체 포인터
 	INFO info;
-	INFO* Player = &info;
+	INFO* Player = new INFO();
 
 	// Monster 동적할당 생성
 	// ◈ 동적 할당 함수를 따로 빼주는 것이 좋다는데 어떻게 할까?
@@ -82,18 +109,79 @@ void GameStart()
 
 	int iChoice;
 
-	cout << "[1] 게임 시작" << endl;
-	cout << "[2] 종료하기" << endl;
-
-	cout << "> ";
-	cin >> iChoice;
-
-	if (iChoice == 1)
+	while(true)
 	{
-		JobSelect(Player);	// 직업 선택
-		Field(Player, Monster);		// 필드 들어가기
+		cout << "[1] 게임 시작" << endl;
+		cout << "[2] 이어 하기" << endl;
+		cout << "[3] 종료 하기" << endl;
+
+		cout << "> ";
+		cin >> iChoice;
+
+		if (iChoice == 1)
+		{
+			JobSelect(Player);	// 직업 선택
+			Field(Player, Monster);		// 필드 들어가기
+		}
+		else if (iChoice == 2)
+		{
+			if (!Load(Player))
+			{
+				cout << endl << "PAYLER DATA ERRER!" << endl;
+
+			}
+			cout << "SUCCESS PLAYER LOAD" << endl;
+			Field(Player, Monster);
+		}
+		else
+		{
+			return;
+		}
 	}
+}
+
+bool Load(INFO* Player)
+{
+	FILE* pLoad = NULL;
+
+	errno_t errLoad = fopen_s(&pLoad, "player.txt", "rb");
+
+	if (0 == errLoad)
+	{
+		fread(&Player->iName, sizeof(&Player->iName), 1, pLoad);
+		fread(&Player->iHp, sizeof(int), 4, pLoad);
+		fread(&Player->iDefence, sizeof(int), 1, pLoad);
+		fread(&Player->iAttack, sizeof(int), 1, pLoad);
+		fread(&Player->iGold, sizeof(int), 1, pLoad);
+
+		fclose(pLoad);
+		return true;
+	}
+	return false;
 	
+}
+
+
+bool Save(INFO* Player)
+{
+	FILE* pSave = NULL;
+	
+	//이게 몰까
+	errno_t errSave = fopen_s(&pSave, "player.txt", "wb");
+
+	if (0 == errSave)
+	{
+		fwrite(&Player->iName, sizeof(&Player->iName), 1, pSave);
+		fwrite(&Player->iHp, sizeof(int), 1, pSave);
+		fwrite(&Player->iDefence, sizeof(int), 1, pSave);
+		fwrite(&Player->iAttack, sizeof(int), 1, pSave);
+		fwrite(&Player->iGold, sizeof(int), 1, pSave);
+
+		fclose(pSave);
+		return true;
+	}
+	return false;
+
 }
 
 /// <summary> 직업 선택 </summary>
@@ -138,7 +226,7 @@ void JobSelect(INFO* Player)
 		Player->iDefence = 3;
 		Player->iGold = 200;
 		break;
-
+		
 	default : 
 		return;
 	}
@@ -159,9 +247,14 @@ int Field(INFO* Player, INFO* Monster)
 {
 	system("pause");
 
+	Save(Player);
 	bool iWhile = true;
 	int* Bag = new int[30];
+
 	static int BagSize(0);
+	bool iBattleReturn = false;
+
+	Item* sItem = new Item();
 
 	while(iWhile)
 	{
@@ -193,7 +286,7 @@ int Field(INFO* Player, INFO* Monster)
 				cout << Player->iName << "가 전투를 준비하고 있습니다..." << endl;
 				system("pause");
 				system("cls");
-				BattleMap(Player, Monster); // 맵 들어가기
+				BattleMap(Player, Monster, sItem); // 맵 들어가기
 			}
 			break;
 
@@ -201,100 +294,200 @@ int Field(INFO* Player, INFO* Monster)
 			cout << Player->iName << "가 가방을 열고 있습니다..." << endl;
 			system("pause");
 			system("cls");
-			Inventory(Player, &BagSize);
+			Inventory(Player, &BagSize, sItem);
 			break;
 
 		case 3:
-			cout << Player->iName << "가 상점에 들어가고 있습니다..." << endl;
-			system("pause");
-			system("cls");
-			Store(Player, Bag, &BagSize);
+			if (iBattleReturn == true)
+			{
+				cout << "주인장의 저주로 상점에 들어갈 수 없습니다" << endl;
+				system("pause");
+				system("cls");
+			}
+			else if(iBattleReturn == false)
+			{
+				cout << Player->iName << "가 상점에 들어가고 있습니다..." << endl;
+				system("pause");
+				system("cls");
+				Store(Player, Bag, &BagSize, sItem, &iBattleReturn);
+			}
 			break;
 
 		default:
 			iWhile= false;
+			return 0;
 		}
 	}
 	return 0;
 }
 
 /// <summary> 인벤토리 </summary>
-void Inventory(INFO* Player, int BagSize[])
+void Inventory(INFO* Player, int BagSize[], Item* sItem) // 안 담김
 {
 	StatBar(Player);
+
 	//static int BagSize(0); -> 이건 가방 개수 세는 거, 안에 아이템 번호 들어있음
 	cout << "▶ 가방 내부 " << endl;
 	cout << endl;
-	int iRedPotion(0);
-	int iGreenPotion(0);
-	int iBluePotion(0);
-	int iSword(0);
-	int iMagicpipe(0);
-	int iArrow(0);
 
 	int iChoice;
 
-	// 아이템 종류 분리
-	for (int i = 0; i < *BagSize; i++)
-	{
-		switch (BagSize[i])
-		{
-		case RedPotion :
-			iRedPotion++;
-			break;		
-
-		case GreenPotion :	
-			iGreenPotion++;
-			break;		
-
-		case BluePotion :
-			iBluePotion++;
-			break;
-
-		case Sword :
-			iSword++;
-			break;
-
-		case Magicpipe :
-			iMagicpipe++;
-			break;
-
-		case Arrow :
-			iArrow++;
-			break;
-		}
-	}
-
-	cout << "[1] [공격력 상승약] 보유 : " << iRedPotion << endl;
-	cout << "[2] [방어력 상승약] 보유 : " << iGreenPotion << endl;
-	cout << "[3] [체력 회복약] 보유	 : " << iBluePotion << endl;
-	cout << "[4] [전설의 마검] 보유   : " << iSword << endl;
-	cout << "[5] [고대 마법봉] 보유   : " << iMagicpipe << endl;
-	cout << "[6] [불 화살] 보유       : " << iArrow << endl;
+	// 포션은 구조체로 만들어서 올려주자 개수 말하는 거임
+	cout << "[1] [공격력 상승약] 보유 : " << sItem->RedPotion << endl;
+	cout << "[2] [방어력 상승약] 보유 : " << sItem->GreenPotion << endl;
+	cout << "[3] [체력 회복약] 보유	 : " << sItem->BluePotion << endl;
+	cout << "[4] [전설의 마검] 보유   : " << sItem->Sword << endl;
+	cout << "[5] [고대 마법봉] 보유   : " << sItem->Magicpipe << endl;
+	cout << "[6] [불 화살] 보유       : " << sItem->Arrow << endl;
 	cout << endl;
 
-	cout << "[1] 사용할 아이템 번호를 적어주세요" << endl;
+	cout << "[1] 아이템 사용" << endl;
 	cout << "[2] 돌아가기" << endl;
 	cin >> iChoice;
 
-	if (iChoice == 1)
+	if(iChoice == 1)
 	{
-		UseItem(Player, &iChoice);
-	}
+		int iUseItemChoice;
+		cout << "사용하실 아이템의 번호를 골라주세요" << endl;
+		cout << "> ";
+		cin >> iUseItemChoice;
 
+		bool Jobhint = true;
+		bool fJobhint = false;
+
+		// 아이템 종류 분리
+
+		switch (iUseItemChoice)
+		{
+		case 1:
+		if(sItem->RedPotion > 0)
+		{
+			Player->iHp += 20;
+			Player->iDefence += 5;
+			Player->iAttack += 5;
+			UseItem(Player, &iChoice, &fJobhint, sItem);
+			sItem->RedPotion--;
+		}
+		else
+		{
+			cout << "사용 아이템을 가지고 있지 않습니다" << endl;
+		}
+		break;
+
+
+		case 2:
+		if (sItem->GreenPotion > 0)
+		{
+			Player->iHp += 5;
+			Player->iDefence += 10;
+			Player->iAttack += 3;
+			UseItem(Player, &iChoice,&fJobhint, sItem);
+			sItem->GreenPotion--;
+		}
+		else
+		{
+			cout << "사용 아이템을 가지고 있지 않습니다" << endl;
+			system("pause");
+		}
+		break;
+
+		case 3:
+		if (sItem->BluePotion > 0)
+		{
+			Player->iHp += 20;
+			Player->iDefence += 3;
+			Player->iAttack += 10;
+			UseItem(Player, &iChoice, &fJobhint, sItem);
+			sItem->BluePotion--;
+		}
+		else
+		{
+			cout << "사용 아이템을 가지고 있지 않습니다" << endl;
+		}
+		break;
+
+		case 4:
+		if(sItem->Sword > 0)
+		{
+			strcpy_s(Player->iName, "전설의 기사");
+			Player->iHp += 30;
+			Player->iDefence += 20;
+			Player->iAttack += 40;
+			sItem->Sword--;
+		}
+		else
+		{
+			cout << "사용 아이템을 가지고 있지 않습니다" << endl;
+		}
+			break;
+
+		case 5:
+		if (sItem->Magicpipe > 0)
+		{
+			strcpy_s(Player->iName, "빛의 마법사");
+			UseItem(Player, &iChoice, &Jobhint, sItem);
+			Player->iHp += 30;
+			Player->iDefence += 30;
+			Player->iAttack += 30;
+			sItem->Magicpipe--;
+		}
+		else
+		{
+			cout << "사용 아이템을 가지고 있지 않습니다" << endl;
+		}
+		break;
+
+		case 6:
+		if (sItem->Arrow > 0)
+		{
+			strcpy_s(Player->iName, "태양의 궁수");
+			UseItem(Player, &iChoice, &Jobhint, sItem);
+			Player->iHp += 40;
+			Player->iDefence += 30;
+			Player->iAttack += 20;
+			sItem->Arrow--;
+		}
+		else
+		{
+			cout << "사용 아이템을 가지고 있지 않습니다" << endl;
+		}
+		break;
+		}
+		
+	}
 	return;
 }
 
 /// <summary> 아이템 사용하기 </summary>
-void UseItem(INFO* Player, int* iChoice)
+void UseItem(INFO* Player, int* iChoice, bool* Jobhint, Item* sItem)
 {
+	PotionStat* ItemStat = new PotionStat();
+
+	if (*iChoice == 0 || 7 <= *iChoice)
+	{
+		cout << "존재하지 않는 아이템 입니다" << endl;
+		return;
+	}
+	else
+	{
+		cout << "공격력 [" << ItemStat->Attack << "] 상승 했습니다" << endl;
+		cout << "방어력 [" << ItemStat->Defence << "] 상승 했습니다" << endl;
+		cout << "체력 [" << ItemStat->PotionHp << "] 상승 했습니다" << endl;
+
+		if (*Jobhint = true)
+		{
+			cout << Player->iName << " 라는 칭호를 얻었습니다!" << endl;
+		}
+
+	}
+
 	// 1. 회복약 경우 최대 player->iHp를 넘길 수 없다
 	// 2. 먄약 보유하지 않은 아이템이라면 없다는 문구를 띄운다
 	// 3. 먄약 보유한 아이템이라면 사용 후 Player->  가 오른다.
 }
 
 /// <summary> 상점 </summary>
-void Store(INFO* Player, int* Bag, int* BagSize)
+void Store(INFO* Player, int* Bag, int* BagSize, Item* sItem, bool* iBattleReturn)
 {
 	while(true)
 	{
@@ -302,6 +495,12 @@ void Store(INFO* Player, int* Bag, int* BagSize)
 		StatBar(Player);
 
 		int iChoice;
+
+		if (*iBattleReturn == true)
+		{
+			return;
+		}
+
 		cout << "어서오세요! 신상 물건 마음껏 보고 가세요~" << endl;
 		cout << "[1] 둘러보기" << endl;
 		cout << "[2] 돌아가기" << endl;
@@ -313,7 +512,7 @@ void Store(INFO* Player, int* Bag, int* BagSize)
 		{
 		case 1:
 			// 상점 둘러보기
-			StoreIN(Player, Bag, BagSize);
+			StoreIN(Player, Bag, BagSize, sItem);
 			break;
 
 		case 2:
@@ -321,22 +520,120 @@ void Store(INFO* Player, int* Bag, int* BagSize)
 			return;
 
 		case 3:
-			// 주인장과 대화하기 : 아직 안함
-			SmallTalk();
+			// 주인장과 대화하기
+			cout << "주인장에게 시비거는 중.." << endl;
+			system("pause");
+			system("cls");
+			SmallTalk(Player, iBattleReturn);
 			break;
+
 		default:
 			return;
 		}
 	}
 }
 
-int SmallTalk()
+int SmallTalk(INFO* Player, bool* iBattleReturn)
 {
+	StatBar(Player);
+
+	INFO* owner = new INFO();
+	
+	cout << "주인장 : 그렇게 원하신다면 상대해드리지요" << endl;
 	// 주인장한테 시비걸고 주인장 이기면 1000g 털리는 대신 상점 이용 못함
+
+	Owner(Player, owner);
+
+	// 도망가면 true 공격 시 false
+	while(BattleOnwerChice(iBattleReturn) == false)
+	{
+		if (*iBattleReturn == true)
+			return 0;
+
+		system("cls");
+		StatBar(Player);
+		StatBar(owner);
+		BattleOwner(Player, owner, iBattleReturn);
+	}
+	return 0;
 }
 
+bool BattleOnwerChice(bool* iBattleReturn)
+{
+	if (*iBattleReturn == true)
+		return 0;
+
+	int iChoice;
+
+	cout << "[1] 공격\t" << "[2] 도망" << endl;
+	cout << "> ";
+	cin >> iChoice;
+
+	if (iChoice == 2)
+	{
+		int iRun;
+		cout << "도망칠 시, 다시는 상점을 이용할 수 없게 됩니다." << endl;
+		cout << "정말 도망치시겠습니까?" << endl;
+		cout << "[1] 네\t" << "[2] 아니오" << endl;
+		cin >> iRun;
+
+		if (iRun == 1)
+			*iBattleReturn = true; // true 시 상점은 다시 이용할 수 없도록 한다.
+	}
+	return 0;
+}
+
+void Owner(INFO* Player, INFO* owner)
+{
+	// 주인장 INFO
+
+	owner->iAttack = 100;
+	owner->iDefence = 50;
+	owner->iHp = 300;
+	owner->iGold = 2000;
+	strcpy_s(owner->iName, "[히든 보스] 주인장");
+
+	// 주인장과의 배틀 시작
+}
+
+int BattleOwner(INFO* Player, INFO* owner, bool* iBattleReturn)
+{
+	static int iRound(1);
+
+	cout << iRound << " Round!" << endl;
+
+	Player->iHp -= owner->iAttack - Player->iDefence; // 주인장의 공격
+	owner->iHp -= Player->iAttack - owner->iDefence; // 플레이어의 공격
+
+	if (owner->iHp <= 0)
+	{
+		cout << Player->iName << "의 승리!!" << endl;
+		cout << "주인장의 모든 스탯은 " << Player->iName << "에게 부여됩니다" << endl;
+		
+		// 주인장 능력치 전이
+		Player->iHp += owner->iHp;
+		Player->iAttack += owner->iAttack;
+		Player->iDefence += owner->iDefence;
+		Player->iGold += owner->iGold;
+	}
+	
+	if (Player->iHp <= 0)
+	{
+		cout << Player->iName << "는 사망했습니다" << endl;
+		cout << "※ 앞으로 상점을 이용하실 수 없습니다 ※" << endl;
+		Player->iHp = 0;
+
+		*iBattleReturn = true;
+		system("pause");
+		system("cls");
+
+		return 0;
+	}
+}
+
+
 /// <summary> 상점 내부 둘러보기 </summary>
-void StoreIN(INFO* Player, int* Bag, int* BagSize)
+void StoreIN(INFO* Player, int* Bag, int* BagSize, Item* sItem)
 {
 	system("cls");
 	int iBuy; // 선택
@@ -369,63 +666,69 @@ void StoreIN(INFO* Player, int* Bag, int* BagSize)
 		// 소비하다
 		switch (iBuy)
 		{
-		case RedPotion:
+		case 1:
 			*qGlod = 300;
 			cout << "▶ 가격은 " << *qGlod << "G 입니다" << endl;
 			if (ReturnSelect(Player, qGlod) == 1)
 			{
 				BuyStorage[iCount] = iBuy;
 				iCount++; // 현재 산 물건 카운트
+				sItem->RedPotion++;
 			}
 			break;
 
-		case GreenPotion:
+		case 2:
 			*qGlod = 300;
 			cout << "▶ 가격은 " << *qGlod << "G 입니다" << endl;
 			if (ReturnSelect(Player, qGlod) == 1)
 			{
 				BuyStorage[iCount] = iBuy;
 				iCount++;
+				sItem->GreenPotion++;
 			}
 			break;
 
-		case BluePotion:
+		case 3:
 			*qGlod = 300;
 			cout << "▶ 가격은 " << *qGlod << "G 입니다" << endl;
 			if (ReturnSelect(Player, qGlod) == 1)
 			{
 				BuyStorage[iCount] = iBuy;
 				iCount++;
+				sItem->BluePotion++;
 			}
 			break;
 
-		case Sword:
+		case 4:
 			*qGlod = 2000;
 			cout << "▶ 가격은 " << *qGlod << "G 입니다" << endl;
 			if (ReturnSelect(Player, qGlod) == 1)
 			{
 				BuyStorage[iCount] = iBuy;
 				iCount++;
+				sItem->Sword++;
 			}
 			break;
 
-		case Magicpipe:
+		case 5:
 			*qGlod = 2000;
 			cout << "▶ 가격은 " << *qGlod << "G 입니다" << endl;
 			if (ReturnSelect(Player, qGlod) == 1)
 			{
 				BuyStorage[iCount] = iBuy;
 				iCount++;
+				sItem->Magicpipe++;
 			}
 			break;
 
-		case Arrow:
+		case 6:
 			*qGlod = 2000;
 			cout << "▶ 가격은 " << *qGlod << "G 입니다" << endl;
 			if (ReturnSelect(Player, qGlod) == 1)
 			{
 				BuyStorage[iCount] = iBuy;
 				iCount++;
+				sItem->Arrow++;
 			}
 			break;
 
@@ -441,7 +744,7 @@ void StoreIN(INFO* Player, int* Bag, int* BagSize)
 	}
 }
 
-/// <summary> 아이템 구입 </summary>
+/// <summary> 아이템 구입 </summary>rand
 int ReturnSelect(INFO* Player, int* qGold)
 {
 	int iChoice;
@@ -465,6 +768,7 @@ int ReturnSelect(INFO* Player, int* qGold)
 			StatBar(Player);
 			cout << endl;
 			cout << "▶ 구입하였습니다" << endl;
+			system("pause");
 			return 1;
 		}
 		else
@@ -476,12 +780,12 @@ int ReturnSelect(INFO* Player, int* qGold)
 			return 0;
 		}
 	}
+	return 0;
 }
 
 /// <summary> 맵 선택 </summary>
-void BattleMap(INFO* Player, INFO* Monster)
+void BattleMap(INFO* Player, INFO* Monster, Item* sItem)
 {
-	system("pause");
 	system("cls");
 
 	StatBar(Player);
@@ -518,7 +822,7 @@ void BattleMap(INFO* Player, INFO* Monster)
 
 			if (BattleChoice(Player, Monster, &iWin) == 1) // 공격을 누르면
 			{
-				if (BattleStart(Player, Monster, &iWin, &RandomNumber) == 0)
+				if (BattleStart(Player, Monster, &iWin, &RandomNumber, sItem) == 0)
 					break;
 			}
 			else
@@ -546,7 +850,7 @@ void CreateMonster(INFO* Monster, int iChoice, int* RandomNumber)
 	else if (iChoice == 2)
 		*RandomNumber = 1 + rand() % 3;
 	else if (iChoice == 3)
-		*RandomNumber = 3 + rand() % 6;
+		*RandomNumber = 3 + rand() % 5;
 
 	cout << endl;
 	cout << "※ 몬스터는 강해지니 주의하세요! ※" << endl;
@@ -598,7 +902,7 @@ int BattleChoice(INFO* Player, INFO* Monster, bool* iWin)
 		return 0;
 }
 /// <summary> 배틀 시작 </summary>
-int BattleStart(INFO* Player, INFO* Monster, bool* pWin, int* RandomNumber)
+int BattleStart(INFO* Player, INFO* Monster, bool* pWin, int* RandomNumber, Item* sItem)
 {
 	int MonsterDown(0);
 
@@ -616,6 +920,8 @@ int BattleStart(INFO* Player, INFO* Monster, bool* pWin, int* RandomNumber)
 			for (int j = 0; j < *RandomNumber; j++)
 			{
 				Player->iGold += Monster->iGold; //골드 획득!
+				delete[] Monster;
+				Monster = nullptr;
 			}
 
 			*pWin = true;
@@ -628,8 +934,17 @@ int BattleStart(INFO* Player, INFO* Monster, bool* pWin, int* RandomNumber)
 		cout << Player->iName << "는 사망하였습니다" << endl;
 		Player->iHp = 0;
 		*pWin = true; // iDie를 파주면 좋겠지만, 인수가 늘어난다. iWin == Return 용으로 생각하자
+
+		delete(Player);
+		Player = nullptr;
+
+		delete(sItem);
+		sItem = nullptr;
+
 		return 0;
 	}
+
+	Save(Player);
 }
 
 // 몬스터 동적할당 꼭 풀어주기!
