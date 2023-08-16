@@ -3,26 +3,36 @@ using namespace std;
 
 int main()
 {
-  for (int i = 0; i < 3; i++)
-	{
-		char* cArr = new char[50]; 
-    // 동적 할당 배열 선언
+	int* iNumber = new int();
+	cout << "몇 개의 닉네임을 출력하시겠습니까?" << endl;
+	cout << "> ";
+	cin >> *iNumber;
+	cout << endl;
 
-		cin >> cArr;
-		// 기존 동적 할당은 *cArr에 값을 넣어줬지만
-    // 현재 사용 중인 cArr은 배열이기 때문에 (배열 == 포인터) 굳이 *를 써주지 않아도 괜찮다.
-
-		cout << cArr << endl;
-
-		cArr = nullptr;
-		// 동적 할당의 주소를 초기화 해준다.
-    // 초기화의 이유는 c++은 사용한 DATA의 주소를 정리해주지 않기 때문에 Programer 스스로 정리를 해줘야 된다.
-    // cArr은 다시 사용할 주소이기 때문에 정리해주고 다시 사용할 수 있도록 만들어 준다.
-
-		if (i == 2)
+	  for (int i = 0; i < *iNumber; i++)
 		{
-			delete[] cArr;
-      // 만약 원하는 개수에 도달했다면 동적 할당을 해제해 줘야 한다.
+			char* cArr = new char[50]; 
+	   		 // 동적 할당 배열 선언
+	
+			cout << "닉네임을 입력해주세요 : ";
+			cin >> cArr;
+			cout << endl;
+			// 기존 동적 할당은 *cArr에 값을 넣어줬지만
+	  		  // 현재 사용 중인 cArr은 배열이기 때문에 (배열 == 포인터) 굳이 *를 써주지 않아도 괜찮다.
+	
+			cout << "닉네임 : " <<  cArr << endl;
+			cout << "닉네임 사이즈 : " << sizeof(cArr) << endl;
+			// size는 Pointer의 byte 크기가 나온다
+
+			cArr = nullptr;
+			// 동적 할당의 주소를 초기화 해준다.
+	 	  	 // 초기화의 이유는 c++은 사용한 DATA의 주소를 정리해주지 않기 때문에 Programer 스스로 정리를 해줘야 된다.
+	    		// cArr은 다시 사용할 주소이기 때문에 정리해주고 다시 사용할 수 있도록 만들어 준다.
+	
+			if (i == *iNumber - 1)
+			{
+				delete[] cArr;
+	      			// 만약 원하는 개수에 도달했다면 동적 할당을 해제해 줘야 한다.
+			}
 		}
-	}
 }
