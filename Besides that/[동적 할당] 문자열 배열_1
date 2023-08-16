@@ -1,6 +1,8 @@
 #include<iostream>
 using namespace std;
 
+// 목적 : 동적할당을 통해 문자열을 여러 번 사용하고 싶었다.
+
 // 1. 문자열은 무조건 배열을 사용하자
 // 2. for문 내에 배열을 i로 돌리게 되면 한 문장씩 나온다
 // 3. char* Monster[30] 에서 30은 문자열의 길이가 맞다!
@@ -8,11 +10,12 @@ using namespace std;
 int main()
 {
 	// 구조체나 class 등에 많이 사용하지 이런 방식으로 잘 사용하진 않는다
+
 	//char* NicName = new char(); // 애초에 이렇게 사용하면 안된다.
 	//cin >> NicName;
 	//cout << NicName;
 	//delete(NicName);
-	////......잘못된 코드.................
+	////......잘못된 코드.................??
 
 	int iRound(1);
 
@@ -21,7 +24,6 @@ int main()
 
 	cout << "개수를 적어주세요" << endl;
 	cin >> *iNumber;
-
 	
 	for(int i = 0; i < *iNumber; i++) // 문자열은 무조건[]로
 	{
