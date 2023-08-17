@@ -1,0 +1,33 @@
+#include<iostream>
+
+using namespace std;
+
+// 원하는 막대기보다 원래 막대기가 더 클 때, 원래 가지고 있는 막대기를 반으로 나누면서
+// 원하는 막대기보다 작아지면 하나를 붙이고
+// 또 원래 막대기가 더 커지면, 다시 반으로 나누고
+// 원하는 막대기보다 작아지만 하나를 붙이고를 반복한다
+// 원하는 막대기는 없는 막대기이다.
+
+int main()
+{
+	int iOrigin = 64;
+	
+	int iCount(0);
+	int iRemain;
+	int iHope;
+
+	cin >> iHope;
+
+	while (iOrigin > 0)
+	{
+		if(iOrigin > iHope)
+			iOrigin = iOrigin / 2;
+		else
+		{
+			iHope -= iOrigin;
+			iCount++;
+		}
+	}
+
+	cout << iCount;
+}
