@@ -1,0 +1,40 @@
+// 1. 잘못된 코드
+int Knight::GetAttackDamage()
+{
+	int damage = _attack;
+
+	int ratio = _maxHp / _hp;
+	if (ratio > 2)
+		damage *= 2;
+
+	return damage;
+}
+
+
+// 2. 해결된 코드
+int Knight::GetAttackDamage()
+{
+	int damage = _attack;
+
+  // 문제 1. 0이 되었을 때 나눗셈 크래쉬가 난다.
+  // 방법 : 나눌 때 0이라는 숫자가 되지 않도록 신경써준다.
+	int percentage = (float)_hp / _maxHp * _maxHp;
+  
+	/* 
+    문제 2. 먼저 나눌 때 0이 된 후 곱하면 무조건 0이라는 값이 나오게 된다.
+    _hp / _maxHp 부터 0.3의 3인 소수점은 전부 잘리게 된다
+   
+	1. 둘 중 하나를 float형으로 캐스팅 해준다.
+  2. * maxHp를 앞으로 끌어 준다. [ _hp * _maxHp / _maxHp ]
+	*/
+
+	if (percentage <= 50)
+	{
+		_attack *= 2;
+	}
+
+}
+	//// 0 일 경우의 예외 처리를 해주지 않았습니다
+
+	return damage;
+}
