@@ -1,0 +1,51 @@
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int* A = new int[100]; // 행의 크기
+	int* B = new int[100];
+	int* C = new int[100];
+
+	int N, M;
+	cin >> N >> M;
+	
+	const int NUMBER = N * M;
+
+	for (int i = 0; i < NUMBER; i++)
+	{
+		cin >> A[i];
+	}
+
+	for (int i = 0; i < NUMBER; i++)
+	{
+		cin >> B[i];
+	}
+
+	for (int i = 0; i < NUMBER; i++)
+	{
+		C[i] = A[i] + B[i];
+	}
+
+	for (int i = 0; i < NUMBER; i += N)
+	{
+		for (int j = i; j < i + N; j++)
+		{
+			cout << C[j];
+
+			if (j != i + N - 1)
+				cout << " ";
+		}
+
+		if(i != NUMBER - N)
+			cout << endl;
+	}
+
+	delete[] A;
+	delete[] B;
+	delete[] C;
+
+	A = nullptr;
+	B = nullptr;
+	C = nullptr;
+}
