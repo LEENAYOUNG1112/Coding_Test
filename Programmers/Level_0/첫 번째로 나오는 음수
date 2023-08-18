@@ -1,0 +1,38 @@
+/*
+  - size() 함수는 컨테이너의 크기를 반환하는 함수이다. 다양한 컨테이너 타입에서 사용할 수 있으며, 해당 컨테이너에 저장된 요소의 개수를 반환한다.
+    반환 값은 size_t 타입이다. 
+  - 시간 복잡도는 O(1)로 매우 효율적이다. 컨테이너 크기 정보가 저장되어 있으므로, 크기를 직접 반환할 수 있다.
+*/
+
+/// <summary> C언어 </summary>
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+int solution(int num_list[], size_t num_list_len) {
+    int answer = -1;
+    
+    for(int i = 0; i < num_list_len; i++)
+    {
+        if(num_list[i] < 0) 
+            return i;
+    }
+    return answer;
+}
+
+/// <summary> C++ 언어 </summary>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<int> num_list) {
+    int answer = -1;
+    
+    for(int i = 0; i < num_list.size(); i++)
+    {
+        if(num_list[i] < 0)
+            return i;
+    }
+    return answer;
+}
