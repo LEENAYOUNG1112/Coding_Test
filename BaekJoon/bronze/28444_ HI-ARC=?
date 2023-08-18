@@ -1,0 +1,18 @@
+#include<iostream>
+
+using namespace std;
+
+int main()
+{
+	int h, i, a, r, c;
+
+	cin >> h >> i >> a >> r >> c;
+
+	int iONE = h * i;
+	int iTWO = a * r * c;
+
+	int iAnswer = iONE - iTWO;
+
+	cout << iAnswer << endl;
+	return 0;
+}
