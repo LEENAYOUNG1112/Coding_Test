@@ -1,0 +1,56 @@
+
+#include <string>
+#include <vector>
+using namespace std;
+
+/// <summary> 1 </summary>
+int solution(vector<int> num_list) {
+    int answer = 0;
+    int iOdd(0);
+    int iEven(0);
+    int iCount(0);
+    
+    for(int i = 0; i < num_list.size(); i += 2)
+    {
+        iOdd += num_list[i];
+        iCount++;
+        
+        if(num_list.size() >= iCount)
+        {
+            iEven += num_list[i + 1];
+            iCount++;
+        }
+    }
+    
+    if(iOdd > iEven)
+        answer = iOdd;
+    else
+        answer = iEven;
+        
+    return answer;
+}
+
+/// <summary> 2 </summary>
+int solution(vector<int> num_list) {
+    int answer = 0;
+    int iOdd(0);
+    int iEven(0);
+    int iCount(0);
+
+    for (int i = 0; i < num_list.size(); i += 2)
+    {
+        iOdd += num_list[i];
+    }
+
+    for (int i = 1; i < num_list.size(); i += 2)
+    {
+        iEven += num_list[i];
+    }
+
+    if (iOdd > iEven)
+        answer = iOdd;
+    else
+        answer = iEven;
+
+    return answer;
+}
