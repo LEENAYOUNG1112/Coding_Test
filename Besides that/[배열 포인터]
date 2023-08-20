@@ -1,0 +1,28 @@
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	char (*ptr)[3];
+
+	char arr1[3] = { 't', 's', 'r' };
+	char arr2[3] = { 't', 'f', ' 5'};
+	char arr3[4] = { 't', 's', 'r', '4'};
+
+	ptr = &arr1;
+
+	for (int i = 0; i < (int)sizeof(*ptr); i++)
+	{
+		cout << (*ptr)[i]; // 배열을 가리키는 건 ()로 감싸줘야 함
+	}
+
+	cout << endl;
+	ptr = &arr2;
+
+	for (int i = 0; i < (int)sizeof(*ptr); i++)
+	{
+		cout << (*ptr)[i];
+	}
+
+	// ptr = &arr3; size가 크든 작든 맞지 않다.
+}
