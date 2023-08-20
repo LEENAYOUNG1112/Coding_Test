@@ -1,9 +1,10 @@
 #include<iostream>
 using namespace std;
 
+// 기본
 void Cleaner()
 {
-	while (getchar() != '\n');
+	while (getchar() != '\n'); // 자동 개행 못하도록 비워주
 }
 int main()
 {
@@ -19,5 +20,33 @@ int main()
 
 	cout << "주민 번호 : " << ID << endl;
 	cout << " 이름 : " << name << endl;
+
+}
+
+// 구조체 활용
+typedef struct tag_Name
+{
+	char cName[10];
+	char cID[7];
+}INFO;
+
+void Cleaner()
+{
+	while (getchar() != '\n');
+}
+
+int main()
+{
+	tag_Name INFO;
+
+	fputs("주민 번호 앞자리 : ", stdout);
+	fgets(INFO.cID, sizeof(INFO.cID), stdin); // 자동 개행하여 초과 문자 
+	Cleaner();
+
+	fputs("이름 입력: ", stdout);
+	fgets(INFO.cName, sizeof(INFO.cName), stdin);
+
+	cout << "주민 번호 : " << INFO.cID << endl;
+	cout << " 이름 : " << INFO.cName << endl;
 
 }
