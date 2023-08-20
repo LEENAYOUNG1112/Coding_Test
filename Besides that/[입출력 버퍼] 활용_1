@@ -1,0 +1,23 @@
+#include<iostream>
+using namespace std;
+
+void Cleaner()
+{
+	while (getchar() != '\n');
+}
+int main()
+{
+	char ID[7];
+	char name[10];
+
+	fputs("주민 번호 앞자리 : ", stdout);
+	fgets(ID, sizeof(ID), stdin); // 자동 개행하여 초과 문자 
+	Cleaner();
+
+	fputs("이름 입력: ", stdout);
+	fgets(name, size(name), stdin);
+
+	cout << "주민 번호 : " << ID << endl;
+	cout << " 이름 : " << name << endl;
+
+}
