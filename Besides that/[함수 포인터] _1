@@ -1,0 +1,25 @@
+#include<iostream>
+using namespace std;
+
+int add(int a, int b)
+{
+	return a + b;
+}
+
+void Str(char* str)
+{
+	cout << str << endl;
+}
+int main()
+{
+	char* str = "you";
+	int a = 3, b = 6;
+
+	int(*fptr)(int a, int b) = add;
+	void(*fptr2)(char*) = Str;
+
+	fptr2(str);
+	cout << fptr(a, b);
+
+	return 0;
+}
