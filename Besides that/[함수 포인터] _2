@@ -1,0 +1,37 @@
+#include<iostream>
+using namespace std;
+
+int Enter(int age1, int age2, int (*cmp)(int a, int b))
+{
+	return cmp(age1, age2);
+}
+
+int Y(int age1, int age2)
+{
+	if (age1 < age2)
+		return age1;
+	else if (age1 > age2)
+		return age2;
+	else
+		return 0;
+}
+
+int O(int age1, int age2)
+{
+	if (age1 < age2)
+		return age2;
+	else if (age1 > age2)
+		return age1;
+	else
+		return 0;
+}
+
+int main()
+{
+	int age1 = 30;
+	int age2 = 60;
+
+	cout << "젊 : " << Enter(age1, age2, Y) << endl;
+	cout << "늙 : " << Enter(age1, age2, O);
+
+}
