@@ -1,0 +1,552 @@
+#include<iostream>
+#include <stdlib.h>  //  rand()
+#include <time.h>    //  time()
+using namespace std;
+
+static int Life = 3;
+
+/// <summary> 고양이 공격 </summary>
+typedef struct tag_Attack
+{
+	int MeowPunch;
+	int Spinningfish;
+	int Roaring;
+
+}Cat_Attack;
+
+/// <summary> 상태 </summary>
+typedef struct tag_Info
+{
+	char	cName[32];
+	int		iLife[3];
+	int		iHp;
+	int		iAttack;
+	int		iDefence;
+	int		iFish;
+	int		Appeal;
+	Cat_Attack AttackType;
+
+}INFO;
+
+/// <summary> 시작 메뉴 </summary>
+enum StartMenu
+{
+	Start = 1,
+	Mini,
+	Loading,
+	Exit
+};
+
+/// <summary> 필드 메뉴 </summary>
+enum FieldMenu
+{
+	BATTLE = 1,
+	Hunting,
+	Shop,
+	Return,
+};
+
+/// <summary> 배틀 맵 메뉴 </summary>
+enum BattleMapMenu
+{
+	BOX = 1,
+	Mouse,
+	Frog,
+	RETURN
+};
+
+/// <summary> 직업 </summary>
+enum Job
+{
+	AmericanShorthair = 1,
+	RussianBlue,
+	Ragdoll,
+	TurkishVan
+};
+
+/// <summary> 고양이 공격 유형 </summary>
+enum CatAttck
+{
+	OriginAttack = 1,
+	MeowPunch ,
+	Spinningfish,
+	Roaring,
+};
+
+/// <summary> 함수 선언 </summary>
+void GameStart();											// 게임 선택
+int Enter(INFO* Cat, int (*qEnter)(INFO* Cat));				// 닉네임 입력하기 ,  들어가기
+
+int InGame(INFO* Cat);										// 본 게임
+int MiniGame(INFO* Cat);									// 미니 게임
+						  
+int CatSelect(INFO* Cat);									// 고양이 고르기
+void StatBar(INFO* Cat, bool bCat = true);					// 고양이 상태바
+						  
+void Field(INFO* Cat);										// 필드
+int FieldEnter(INFO* Cat, int(*FieldChoice)(INFO* Cat));	// 필드 선택 분기점
+
+// Battle
+int BattleField(INFO* Cat);									// 배틀 필드 :: 맵 정하기
+void CreateMonster(INFO* Monster, int iChoice);				// 몬스터 생성
+int BattleChoice(INFO* Cat, INFO* Monster);					// 배틀 시작?
+int Battle(INFO* Cat, INFO* Monster);						// 배틀 중
+
+int main()
+{
+	GameStart(); // 게임 선택
+}
+
+/// <summary> 게임 선택 </summary>
+void GameStart()
+{
+	// 동적 할당 : PLAYER
+	INFO* Cat = new INFO();
+
+	int iChoice;
+	
+	cout << "TEXT RPG" << endl;
+	cout << "[1] Start" << endl;
+	cout << "[2] Load" << endl;
+	cout << "[3] Exit" << endl;
+	cin >> iChoice;
+	cout << endl;
+	
+	// 게임 선택
+	switch (iChoice)
+	{
+	case Start :
+		cout << "Start Game World.." << endl;
+		system("pause");
+		Enter(Cat, InGame);
+		break;
+	
+	case Mini:
+		cout << "Start MiniGame World.." << endl;
+		system("pause");
+		Enter(Cat, MiniGame);
+		break;
+
+	case Loading:
+		cout << "Loading.." << endl;
+		system("pause");
+		break;
+
+	case Exit :
+		cout << "You Exit Bye!" << endl;
+		break;
+
+	default :
+		break;
+	}
+}
+
+/// <summary> 닉네임 입력하기 / 들어가기 </summary>
+int Enter(INFO* Cat, int (*qEnter)(INFO* Cat))
+{
+	while(true)
+	{
+		system("cls");
+
+		int iChoice;
+
+		cout << "Please name the cat : " << endl;
+		cout << "> ";
+		cin >> Cat->cName;
+
+		cout << endl;
+
+		cout << "Is the Cat's name " << Cat->cName << "?" << endl;
+		cout << "[1] YES" << endl;
+		cout << "[2] NO" << endl;
+		cin >> iChoice;
+
+		if (iChoice == 1)
+			break;
+	}
+	
+	for (int i = 0; i < 3; i++)
+	{
+		Cat->iLife[i] = 999;
+		// 생성 시 목숨 3개 부여
+	}
+
+	return qEnter(Cat); // 함수 포인터
+}
+
+/// <summary> 본 게임 </summary>
+int InGame(INFO* Cat)
+{
+	CatSelect(Cat); // 고양이 고르기
+	Field(Cat);
+	return 0;
+}
+
+/// <summary> 직업 선택 </summary>
+int CatSelect(INFO* Cat)
+{
+	system("cls");
+	int iChoice;
+	cout << "Chocie Your Cat" << endl;
+	cout << "[1] American Shorthair" << endl;
+	cout << "[2] Russian Blue" << endl;
+	cout << "[3] Ragdoll" << endl;
+	cout << "[4] Turkish Van" << endl;
+	cout << "> ";
+	cin >> iChoice;
+
+	switch (iChoice)
+	{
+	case AmericanShorthair :
+		Cat->iHp = 100;
+		Cat->iAttack = 20;
+		Cat->iDefence = 3;
+		Cat->iFish = 3;
+		Cat->Appeal = 0;
+
+		Cat->AttackType.MeowPunch = Cat->iAttack + 5;
+		Cat->AttackType.Spinningfish = Cat->iAttack + 3;
+		Cat->AttackType.Roaring = Cat->iAttack;
+		break;
+
+	case RussianBlue :
+		Cat->iHp = 90;
+		Cat->iAttack = 20;
+		Cat->iDefence = 3;
+		Cat->iFish = 3;
+		Cat->Appeal = 0;
+
+		Cat->AttackType.MeowPunch = Cat->iAttack + 5;
+		Cat->AttackType.Spinningfish = Cat->iAttack + 3;
+		Cat->AttackType.Roaring = Cat->iAttack;
+		break;
+		
+	case Ragdoll :
+		Cat->iHp = 100;
+		Cat->iAttack = 17;
+		Cat->iDefence = 6;
+		Cat->iFish = 3;
+		Cat->Appeal = 0;
+
+		Cat->AttackType.MeowPunch = Cat->iAttack + 5;
+		Cat->AttackType.Spinningfish = Cat->iAttack + 3;
+		Cat->AttackType.Roaring = Cat->iAttack;
+		break;
+
+	case TurkishVan :
+		Cat->iHp = 110;
+		Cat->iAttack = 15;
+		Cat->iDefence = 4;
+		Cat->iFish = 3;
+		Cat->Appeal = 0;
+
+		Cat->AttackType.MeowPunch = Cat->iAttack + 5;
+		Cat->AttackType.Spinningfish = Cat->iAttack + 3;
+		Cat->AttackType.Roaring = Cat->iAttack;
+		break;
+
+	default : 
+		break;
+	}
+
+	return 0;
+}
+
+/// <summary> 상태 바 </summary>
+void StatBar(INFO* Character, bool bCat)
+{
+	cout << "NAME : " << Character->cName << endl;
+	cout << "HP : " << Character->iHp << "\t" << "PUNCH : " << Character->iAttack << "\t" << "DEFENCE : " << Character->iDefence << endl;
+	cout << "FISH : " << Character->iFish << endl;
+
+	if(bCat == true)
+	{
+		cout << "LIFE : ";
+		for (int i = 0; i < 3; i++)
+		{
+			if (Character->iLife[Life] == 999)
+				cout << "▣ ";
+		}
+		cout << endl;
+	}
+	cout << "==================================================" << endl;
+	cout << endl;
+}
+
+/// <summary> 필드 </summary>
+void Field(INFO* Cat)
+{
+	int iChoice;
+	system("cls");
+
+	StatBar(Cat);
+	cout << "What would you do with " << Cat->cName << "?" << endl;
+	cout << "[1] BATTLE" << endl;
+	cout << "[2] Hunting Cat Bar" << endl;
+	cout << "[3] Meow Shop" << endl;
+	cout << "[4] Return" << endl;
+	cout << "> ";
+	cin >> iChoice;
+	cout << endl;
+
+	switch (iChoice)
+	{
+	case BATTLE :
+		cout << Cat->cName << " is going to the Battlefield.." << endl;
+		system("pause");
+		FieldEnter(Cat, BattleField);
+		break;
+
+	case Hunting :
+		cout << Cat->cName << " is looking for a Lover.." << endl;
+		system("pause");
+		break;
+
+	case Shop :
+		cout << Cat->cName << " is entering the cat Alley.." << endl;
+		system("pause");
+		break;
+
+	case Return :
+		break;
+	}
+}
+
+/// <summary> 필드 선택 </summary>
+int FieldEnter(INFO* Cat, int(*FieldChoice)(INFO* Cat))
+{
+	system("cls");
+	return FieldChoice(Cat);
+}
+
+/// <summary> 배틀 필드 : 맵 선택 </summary>
+int BattleField(INFO* Cat)
+{
+	StatBar(Cat);
+	INFO* Monster = new INFO();
+	int iChoice;
+
+	cout << "Where would you like to send the " << Cat->cName << "?" << endl;
+	cout << "[1] BOX Dungeon (lower)" << endl;
+	cout << "[2] A Den Of Rats (middle)" << endl;
+	cout << "[3] Frog Castle (upper)" << endl;
+	cout << "[4] RETURN" << endl;
+	cout << "> ";
+	cin >> iChoice;
+	cout << endl;
+
+	if (iChoice == BOX)
+	{
+		cout << Cat->cName << " like boxes! " << endl;
+		CreateMonster(Monster, iChoice);
+		system("pause");
+		BattleChoice(Cat, Monster);
+		BattleField(Cat);
+	}
+	else if (iChoice == Mouse)
+	{
+		cout << Cat->cName << " is entering the Mouse's Den.. " << endl;
+		CreateMonster(Monster, iChoice);
+		system("pause");
+	}
+	else if (iChoice == Frog)
+	{
+		cout << Cat->cName << " vows revenge on the Frogs.. " << endl;
+		CreateMonster(Monster, iChoice);
+		system("pause");
+	}
+	else
+		return 0;
+}
+
+/// <summary> 몬스터 생성 </summary>
+void CreateMonster(INFO* Monster, int iChoice)
+{
+	srand(time(NULL));
+	int randomMonster = 0;
+
+	if (iChoice == BOX)
+	{
+		randomMonster = rand() % 3 + 1;
+		strcpy_s(Monster->cName, "Butler Thumb");
+		Monster->iHp = 30 * randomMonster;
+		Monster->iAttack = 2 * randomMonster;
+		Monster->iDefence = randomMonster;
+		Monster->iFish = randomMonster;
+	}
+	else if (iChoice == Mouse)
+	{
+		randomMonster = rand() % 6 + 4;
+		strcpy_s(Monster->cName, "Field Mouse");
+		Monster->iHp = 30 * randomMonster;
+		Monster->iAttack = 5 * randomMonster;
+		Monster->iDefence = randomMonster;
+		Monster->iFish = 5 + randomMonster;
+	}
+	else if(iChoice == Frog)
+	{
+		randomMonster = rand() % 9 + 7;
+		strcpy_s(Monster->cName, "Frog Corps");
+		Monster->iHp = 40 * randomMonster;
+		Monster->iAttack = 10 * randomMonster;
+		Monster->iDefence = 2 * randomMonster;
+		Monster->iFish = 10 + randomMonster;
+		// 9를 깨면 최종 몬스터
+	}
+}
+
+/// <summary> 배틀 시작 여부 </summary>
+int BattleChoice(INFO* Cat, INFO* Monster)
+{
+	system("cls");
+	StatBar(Cat);
+	StatBar(Monster, false);
+
+	int iChoice;
+
+	cout << "Would you like to Fight?" << endl;
+	cout << "[1] Yes" << endl;
+	cout << "[2] No" << endl;
+	cout << "> ";
+	cin >> iChoice;
+
+	if (iChoice == 1)
+	{
+		Battle(Cat, Monster);
+	}
+	else
+	{
+		cout << "Cat Teleportation!" << endl;
+		system("pause");
+		
+		return 0;
+	}
+	
+}
+
+/// <summary> 배틀 </summary>
+int Battle(INFO* Cat, INFO* Monster)
+{
+	while (true)
+	{
+		system("cls");
+
+		StatBar(Cat);
+		StatBar(Monster, false);
+		
+		int iAttackChoice;
+		int Deal(0);
+		int iRound = 1;
+
+		cout << iRound << " Round!" << endl;
+		cout << "[1] Punch" << endl;
+		cout << "[2] Meow Punch" << endl;
+		cout << "[3] Spinning Fish" << endl;
+		cout << "[4] Roaring" << endl;
+		cout << "> ";
+		cin >> iAttackChoice;
+
+		// 냥이 선빵
+		switch (iAttackChoice)
+		{
+		case OriginAttack:
+			Deal = Cat->iAttack - Monster->iDefence;
+			break;
+
+		case MeowPunch:
+			Deal = Cat->AttackType.MeowPunch - Monster->iDefence;
+			break;
+
+		case Spinningfish:
+			Deal = Cat->AttackType.Spinningfish - Monster->iDefence;
+			break;
+
+		case Roaring:
+			Deal = Cat->AttackType.Roaring - Monster->iDefence;
+			break;
+
+		default:
+			break;
+		}
+
+		if (Deal < 0) // 음수라면
+		{
+			cout << "Counter!!" << endl;
+			Deal = abs(Deal);
+			Cat->iHp = Monster->iAttack;
+
+			system("pause");
+			system("cls");
+
+			StatBar(Cat);
+			StatBar(Monster, false);
+		}
+		else
+			Monster->iHp -= Deal;
+
+		if (Monster->iHp <= 0)
+		{
+			Cat->iFish += Monster->iFish;
+			cout << "YOUR CAT WIN !" << endl;
+			cout << "REWARD : " << Cat->iFish << endl;
+			return 0;
+		}
+		else
+		{
+			static int i = 2;
+			cout << "YOUR CAT LOSE.." << endl;
+			cout << "REWARD : - 1 LIFE" << endl;
+			cout << Cat->iLife[--i];
+			return 0;
+		}
+
+		system("pause");
+		system("cls");
+
+		StatBar(Cat);
+		StatBar(Monster, false);
+
+		// 몬스터 후빵
+		Deal = Monster->iAttack - Cat->iDefence;
+
+		if (Deal < 0) // 음수라면
+		{
+			cout << "Counter!!" << endl;
+			Deal = abs(Deal);
+			Monster->iHp -= Cat->iAttack;
+
+			system("cls");
+			system("cls");
+
+			StatBar(Cat);
+			StatBar(Monster, false);
+		}
+		else
+			Cat->iHp -= Deal;
+
+		if (Monster->iHp <= 0)
+		{
+			Cat->iFish += Monster->iFish;
+			cout << "YOUR CAT WIN !" << endl;
+			cout << "REWARD : " << Cat->iFish << endl;
+			return 0;
+		}
+		else
+		{
+			cout << "YOUR CAT LOSE.." << endl;
+			cout << "REWARD : - 1 LIFE" << endl;
+			--Life;
+			return 0;
+		}
+
+		system("pause");
+	}
+	return 0;
+}
+
+/// <summary> 미니 게임 </summary>
+int MiniGame(INFO* Player)
+{
+	return 0;
+
+}
