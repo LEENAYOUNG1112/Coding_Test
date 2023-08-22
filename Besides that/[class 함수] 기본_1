@@ -1,0 +1,35 @@
+class Knight
+{
+public :
+	void Attack() {cout << "Attack" << endl; } 
+	void Die() { cout << "Die" << endl; }
+	void HealMe(int value)   // [가공하는 곳] : Knight 라는 객체를 실행한다.
+	{
+			Knight* thisPtr = this;
+			this-> hp += 10; // (this->) 이 간접적으로 숨겨져 있다. 생략 가능하다.
+	}
+	// 멤버 함수 영역  :: 코드 영역
+	// 행동을 묘사하는 함수이다.
+	// => Knight만 사용할 수 있는 특수 함수
+
+public :
+	int m_iHp; 
+	int m_iAttack;
+	int m_iDefence; 
+	// 멤버 변수 :: Stack 영역
+	// 메모리를 차지하는 부분은 이 영역까지 밖에 없다.
+}
+
+void HealMe(Knight * thisPtr, int value)
+{
+		thisPtr -> m_iHp += value; // 자기 자신에 대한 포인터를 간접적으로 받을 수 있다.
+}
+
+int main()
+{
+		Knight*   k1 = new Knight(); // 동적 할당 선언 예시
+		Knight    k1; // 객체 instance : 하나의 설계도를 가지고 샘플을 만든다 .
+
+		k1.attack = 100;// [데이터를 갖는 곳], 멤버 변수 사용법
+		k1.Attack();    // 멤버 함수 사용법
+}
