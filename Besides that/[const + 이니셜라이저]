@@ -1,0 +1,50 @@
+// =============================header==========================================
+class Const
+{
+public :
+	Const() : m_iA(10), m_iB(20) {};
+	Const(int a, int b) : m_iA(a), m_iB(b){ }
+
+public :
+	void	Cal();
+	void	Render() const;
+	
+private:
+	int	 m_iA;
+	int	 m_iB;
+	const static int m_iC = 23041;
+	const int &ia = 303;
+	const int &ib = 101;
+	// 참조는 변수만 참조 할 수 있다
+	// 하지만 const &를 사용하면 임시적인 공간인 리터럴 상수에도 참조할 수 있다.
+
+};
+
+// =============================cpp==========================================
+#include "Const.h"
+#include <iostream>
+using namespace std;
+
+int main()
+{
+
+	Const cons(3, 70);
+	
+	cons.Cal();
+		
+}
+
+void Const::Cal()
+{
+	m_iB = ia + ib;
+	Render();
+
+}
+
+void Const::Render() const
+{
+	cout << m_iA << "\t" << m_iB << endl;
+	cout << m_iC << endl;
+	
+
+}
