@@ -1,0 +1,98 @@
+// Main Game header
+#pragma once
+#include "Info.h"
+#include "Item.h"
+class Player
+{
+public :
+	Player();
+	Player(int Choice); // 선택지 cpp에 들이기
+	~Player();
+
+public : // During a Battle 
+	void	Set_Choice(int Choice) { iChoice = Choice; } // 직업 선택지 받아오기
+	void	Set_Gold(int _Reward) { m_Info.iGold += _Reward; }
+	void	Set_Hp(int attack) { m_Info.iHp -= attack; }
+	Info	Get_Info() { return m_Info; }  // 플레이어 상태 정보를 간단하게 가지갈 수 있는 함수
+	void	CreateNicName();
+
+	void	Get_ItemCount(Item* ItemCount){}
+
+public : // During a Item
+	void	Set_MinusGold(int iGold) { m_Info.iGold -= iGold;}
+	void	Set_AddHp(int addHp) { m_Info.iHp += addHp; }
+	void	Set_AddAttack(int addAttack) { m_Info.iAttack += addAttack; }
+	void	Set_AddAll(int addHp, int addAttack)
+	{
+		m_Info.iHp += addHp;
+		m_Info.iAttack += addAttack;
+	}
+
+// 다음에 할 때는 빼고 더하는 것만 선언해주자 :: 기능대로 선언하니까 복잡함
+
+public :
+	void	Init();
+	void	JobCollection();
+	void	PlayerStat();
+	void	HaveItemBar();
+	//void	ItemBag(ItemInfo* _item) { m_ItemInven = _item;}
+	
+private :
+	Info	m_Info;
+	int		iChoice; // 직업 선택지 저장하기
+
+};
+
+
+
+
+// Main Game cpp
+#include "MainGame.h"
+#include "iostream.h"
+
+MainGame::MainGame()
+{
+	m_PlayerJob = nullptr;
+	Init();
+}
+
+MainGame::~MainGame()
+{
+	Release();
+}
+
+void MainGame::Init()
+{
+	if (m_PlayerJob == nullptr)
+		m_PlayerJob = new PlayerJob; // 생성자 할당
+
+	m_PlayerJob->Init();
+}
+
+void MainGame::Release()
+{
+	SAVE_DELETE(m_PlayerJob);
+}
+
+void MainGame::StartGame()
+{
+	//변수 모음
+	int iChoice;
+
+	// 게임 시작
+	cout << "TEXT RPG" << endl;
+	cout << "[1] Game Start" << endl;
+	cout << "[2] Load" << endl;
+	cout << "[3] Sotre" << endl;
+	cout << "[$] Exit" << endl;
+	cin >> iChoice;
+
+	switch(iChoice)
+	{
+	case 1:
+		m_PlayerJob->ChoiceJob();
+		break;
+	}
+
+	
+}
