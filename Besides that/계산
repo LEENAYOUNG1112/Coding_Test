@@ -1,0 +1,110 @@
+// =============================header==========================================
+#pragma once
+
+// 전역 변수 : 데이터 영역에 해당된다.
+// 프로그램이 시작하자마자 메모리가 할당되기 때문에 전역에 초기화를 시켜줘야 한다
+
+class Calculator
+{
+public:
+	static int	m_iTotal; // 선언
+
+public :
+	Calculator();
+	
+	~Calculator();
+public :
+	void	Init();
+
+public :
+	void	Get_A(int a) { iA = a; }
+	void	Get_B(int b) { iB = b; }
+	void	Get_Choice(int iChoice) { m_iChoice = iChoice; }
+
+	void	Calcul();
+	void	Calculer();
+
+	void const 	Render(int _Result); // 출력만 가능한 const 함수
+	void static Render_ToTal(); // static만 불러올 수 있는 static 함수
+private :
+	int		iA; // 들어올 때마다 쓰레기 값이 들어오는 건가..? 
+	int		iB;
+	int		m_iChoice;
+	// 전역 변수 선언 : 알려만 주는 것 뿐이지 메모리가 할당되지 않는다.
+};
+
+// =============================cpp==========================================
+#include "Calculator.h"
+#include <iostream>
+using namespace std;
+
+
+
+Calculator::Calculator() 
+{
+	
+}
+
+Calculator::~Calculator()
+{
+}
+
+
+
+void Calculator::Calcul()
+{
+	while(true)
+	{
+		int iChoice;
+		int sa, sb;
+		cout << "무엇을 계산하시겠습니까?" << endl;
+		cout << "1. Add		2. Mius		3. Multip	4. Division" << endl;
+		cin >> iChoice;
+		Get_Choice(iChoice);
+
+		cout << "숫자 두 개를 입력해주세요" << endl;
+		cin >> sa;
+		cin >> sb;
+
+		// 숫자 얻어오기
+		Get_A(sa);
+		Get_B(sb);
+		Calculer();
+	}
+}
+
+void Calculator::Calculer()
+{
+	int iResult(0);
+
+	if (m_iChoice == 1)
+		iResult = iA + iB;
+	else if (m_iChoice == 2)
+		iResult = iA - iB;
+	else if (m_iChoice == 3)
+		iResult = iA * iB;
+	else if (m_iChoice == 4)
+		iResult = iA / iB;
+
+	m_iTotal += iResult;
+	Render(iResult);
+}
+
+
+// 출력만 가능한 const 함수
+void const Calculator::Render(int _Result) 
+{
+	// _Result++; : 가능하다
+	
+	cout << "현재 결과 : " << _Result << endl;
+	Render_ToTal();
+}
+
+void Calculator::Render_ToTal() // const와 달리 static을 써주지 않는다
+{
+	cout << "총 결산 : " << m_iTotal << endl;
+	// cout << iA << endl;  : static 멤버 변수가 아닌 것은 static 함수에 사용할 수 없다.
+	cout << "추가 계산 : " << ++m_iTotal << endl;
+	// 계산도 가능하다
+
+}
