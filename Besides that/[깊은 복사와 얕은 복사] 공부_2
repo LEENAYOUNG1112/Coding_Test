@@ -1,0 +1,48 @@
+#include<iostream>
+using namespace std;
+
+class Pet
+{
+public:
+	explicit Pet(char name[], int myage)
+	{
+		int len = strlen(name);
+		name = new char[len + 1];
+		strcpy(cName, name); 
+
+		age = myage;
+	};
+
+	explicit Pet(const Pet& copypet) : age(copypet.age)
+	{
+		cName = new char[strlen(copypet.cName) + 1];
+		strcpy_s(cName, sizeof(copypet.cName), copypet.cName);
+
+	}
+
+	void	Info() const
+	{
+		cout << "name : " << cName << endl;
+		cout << "age : " << age << endl;
+	}
+
+	~Pet()
+	{
+		delete[] cName;
+	}
+
+private:
+	char* cName;
+	int	age;
+
+};
+
+int main()
+{
+	Pet pet("Kami", 30);
+	pet.Info(); // 기본 생성자
+	// Pet pet2 = pet;  => explicit 사용
+	Pet pet2(pet);
+
+
+}
