@@ -1,0 +1,100 @@
+class Pet
+{
+public:
+	Pet() { cout << "Pet()" << endl; } // 기본 생성자
+	~Pet() { cout << "~Pet()" << endl; } // 소멸자'
+
+	Pet(const Pet& pet) { cout << "Pet(const Pet&" << endl;}
+	// 복사 생성자
+public :
+	int _hp = 100;
+	Pet _pet; // 얕은 복사
+	Pet* _pet; // 깊은 복사
+	// 소멸해야 하는데 Knight k1도 k2도 같은 포인터를 가리키게 되어
+	// 동적 할당 해제를 했을 때 둘 중 하나는 못 하게 된다.
+	// 따로 만들고자 했던 의도와는 다르게 하나를 같이 공유한 셈이다
+	// 이를 해결하기 위해 깊은 복사를 사용해야 한다.
+	Knight(const Knight& k)
+	{
+		_hp = k._hp;
+		_pet = new Pet(*(K._Pet));
+		// 새로운 펫을 만들어주고 내용물을 옮겨서 전달해준다.
+
+	}
+};
+
+int main()
+{
+	Knight k1;
+	k1.hp = 200;
+
+	Knight k2 = k1; // 복사 생성자
+	//컴파일러가 기본적으로 만들어준다
+	// 하지만 우리가 만들어서 함수 정의에 우리가 무엇을 기입할 지 명시할 수 있지만
+	// 안 만들어도 그만이다.
+	//이게 얕은 복사
+}
+
+int main() {
+	int* a = new int(5);
+	int* b = new int(3);
+
+	// a = b; 각각 주소 값을 저장하고 있다.    
+}
+
+class String {
+public :
+	String()
+	{
+		// 기본 생성자이다/ 이곳에는 직접 동적 할당을 안 하는 것이 좋다
+		strData = nullptr; // 지금은 포인터가 아무것도 가리키고 있지 않다.
+		len = 0;
+
+	}
+	 
+	String(String& rhs) //*str -> const char 값을 저장하겠다.
+	{
+		//strData = str; : 얕은 복사
+		
+		len = strlen(str); // 길이 저장
+		strData = new char[rhs. len + 1]; // 동적할당
+		// 여기 까지 얕은 복사
+		strcpy(strData, rhs.str); // 문자열의 주소 값을 카피함
+		// strcpy로 복사를 해줘야 깊은 복사
+	}
+
+	String(String& rhs) //복사 생성자는 참조를 붙여줘야 한다
+	{
+		// 얕은 복사 : strData = rhs.strData;
+		len = rhs.len;
+		// rhs.strData가 가지고 있는 멤버 변수를 매개변수로 바꿔버린다.
+	}
+
+	~String()
+	{
+		delete[] strData;
+	}
+
+	char* GetStrData() const// 반환 형식이 char포인터
+	{
+		return strData;
+	}
+
+	int GetLen() const {
+		return len;
+	}
+private:
+	char* strData;
+	int len;
+};
+
+int main()
+{
+	String s; 
+	// 매개변수가 없는 기본 생성자 호출
+	String s1(s); // 복사 생성자
+	// 얕은 복사 : 주소 복사
+
+	// 깊은 복사 : 값 복사
+
+}
