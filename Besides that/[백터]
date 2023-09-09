@@ -1,0 +1,74 @@
+#include "stdafx.h"
+#include "CObj.h"
+#include <vector>
+#include <iostream>
+using namespace std;
+
+class Player
+{
+public :
+	Player(int a, int b): a{a}, b{b} {}
+
+public :
+	int a;
+	int b;
+};
+
+int main()
+{
+	//vector<Player> vecPlayer;
+	//vecPlayer.reserve(5);
+	//vecPlayer.push_back(Player(5, 2));
+	//vecPlayer.push_back(Player(4, 2));
+	//vecPlayer.push_back(Player(3, 2));
+	//vecPlayer.push_back(Player(2, 2));
+	//vecPlayer.push_back(Player(1, 2));
+
+
+	//vecPlayer.at(3); // []가 인덱스에 바로 접근하기 때문에 좀더 빠르긴 하다. v[idx]
+
+	//vecPlayer.front(); // 앞에 있는 원소를 참조
+	//vecPlayer.back(); // 뒤에 있는 원소를 참조
+	//// being과 end는 iterator와 참조하는 것이다.
+
+	//vecPlayer.clear(); // 원소는 제거하되 메모리 (capacity)는 남아 있다
+	//vecPlayer.push_back(Player(2, 4));
+	//vecPlayer.push_back(Player(3, 2));
+	//vecPlayer.push_back(Player(2, 2));
+	//vecPlayer.push_back(Player(1, 2));
+
+	//vecPlayer.rend(); // reverse end를 가리킨다. 거꾸로해서 마지막의 다음을 가리킨다
+	//
+	//std::vector<int>::iterator it;
+	//it = vecPlayer.begin();
+
+	//for (vector<int>::size_type i = 0; i < vecPlayer.size(); ++i)
+	//{
+	//	cout << typeid(vector<int>::size_type).name() << endl;
+	//}
+
+	std::vector<int> m(3, 2); // capacity : 3     size : 2
+	std::vector<int>::iterator it;
+
+	it = m.begin()+2;
+	it = m.insert(it, 200); // 밀려남
+
+	//===============객체 넣기================
+
+	std::vector<Player> player; // 플레이어 선언
+	std::vector<Player>::iterator it2; // 플레이어 메모리를 가리키는 반복자 선언
+
+	player.reserve(10); 
+
+	player.push_back(Player(1, 2)); // 값 집어 넣기
+	player.push_back(Player(3, 4));
+	player.push_back(Player(53,1));
+	player.push_back(Player(3, 4));
+
+	it2 = player.begin() + 2; // iterator에 위치 주소 값을 집어 넣는다 :: begin 은 시작 주소를 return 한다
+	player.at(3);	
+	player.insert(it2, Player(1, 4)); // insert는 (위치, 값)이기 때문에, iter에 위치 값 주소를 넣어준다
+	// 그렇다면 insert의 첫번 째는 값이 들어가는 게 아니라 위치 값이 반환되는 것인가?
+
+	
+}
