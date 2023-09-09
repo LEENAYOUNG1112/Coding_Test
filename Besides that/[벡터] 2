@@ -1,0 +1,70 @@
+#include "stdafx.h"
+#include "CObj.h"
+#include <vector>
+#include <iostream>
+using namespace std;
+
+class Player
+{
+public :
+	Player(int a, int b): a{a}, b{b} {}
+
+public :
+	int a;
+	int b;
+};
+
+int main()
+{
+	vector<Player> vecPlayer;
+	vecPlayer.reserve(5);
+	vecPlayer.push_back(Player(5, 2));
+	vecPlayer.push_back(Player(4, 2));
+	vecPlayer.push_back(Player(3, 2));
+	vecPlayer.push_back(Player(2, 2));
+	vecPlayer.push_back(Player(1, 2));
+
+
+	cout << vecPlayer.at(3); // []가 인덱스에 바로 접근하기 때문에 좀더 빠르긴 하다. v[idx]
+
+	vecPlayer.front(); // 앞에 있는 원소를 참조
+	vecPlayer.back(); // 뒤에 있는 원소를 참조
+	// being과 end는 iterator와 참조하는 것이다.
+
+	vecPlayer.clear(); // 원소는 제거하되 메모리 (capacity)는 남아 있다
+	vecPlayer.push_back(Player(2, 4));
+	vecPlayer.push_back(Player(3, 2));
+	vecPlayer.push_back(Player(2, 2));
+	vecPlayer.push_back(Player(1, 2));
+
+	vecPlayer.rend(); // reverse end를 가리킨다. 거꾸로해서 마지막의 다음을 가리킨다
+	
+	vecPlayer.reserve(5); 
+	// 미리 동적할당 해놓는다. 왜냐면 미리 늘려놓지 않은 상태에서 push_back을 하게 되면
+	//=> 상수 시간이다. 하지만 벡터는 공간이 부족하다면 1,5배 씩 공간을 뻥튀기 함
+	// https://www.acmicpc.net/board/view/31160
+
+	vecPlayer.resize(2);
+	vecPlayer.resize(10);
+	vecPlayer.size();
+	vecPlayer.capacity();
+
+
+	vector<Player> p;
+	p.reserve(3);
+	p.push_back(Player(1,2));
+	p.push_back(Player(1, 2));
+	p.push_back(Player(1, 2));
+
+	// insert 객체에 넣는 방법?
+	for (vector<int>::size_type i = 0; i < vecPlayer.size(); ++i) 
+	{
+		cout << typeid(vector<int>::size_type).name() << endl; 
+		// 결과 값이 unsigned int 형식이라고 뜬다.
+	}
+	const vector<Player>::const_iterator iter = p.begin()+2;
+	 
+	p.insert(*iter, Player(2,2));
+	
+	
+}
